@@ -1,0 +1,20 @@
+<div class="redirect-overlay-sec"></div>
+<div class="redirect-sec">
+  <div class="redirect-header">
+    <div class="image-sec">
+      <img src="{{ logoPath }}" alt="omnioffer logo" />
+    </div>
+    <div class="close-icon">
+      <span (click)="gotohome()"><em class="pixel-icons icon-close"></em></span>
+    </div>
+  </div>
+  <div class="redirect-body">
+    <p>Your session will be lost, do you want to proceed?</p>
+  </div>
+  <div class="redirect-footer">
+    <button pi-button color="subtle" (click)="gotohome()">
+      No Keep the session
+    </button>
+    <button pi-button color="accent" (click)="killSess()">Yes continue</button>
+  </div>
+</div>

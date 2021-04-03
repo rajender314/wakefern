@@ -1,0 +1,333 @@
+<div class="import-valid-dialog">
+  <div class="mat-dialog-heading">
+    <em
+      (click)="goBack()"
+      class="pixel-icons icon-arrow-back"
+      *ngIf="data.action == 'vc'"
+    ></em>
+    <div class="left-border" *ngIf="data.action == 'vc'"></div>
+
+    <div class="header-content" *ngIf="data.action == 'vc'">
+      <div class="header-img"><img [src]="headerImg" alt="image" /></div>
+      <div class="header-title">
+        <h2 mat-dialog-title>{{ selectedFileInfo.name }}</h2>
+        <span *ngIf="selectedFileInfo.uploaded_by"
+          >Uploaded by {{ selectedFileInfo.uploaded_by }}</span
+        >
+      </div>
+    </div>
+
+    <div class="header-content" *ngIf="data.action == 'search'">
+      <div><h2 mat-dialog-title>Search for a File</h2></div>
+    </div>
+    <div class="header-content" *ngIf="data.action == 'upload'">
+      <div><h2 mat-dialog-title>Upload File</h2></div>
+    </div>
+    <div class="header-content" *ngIf="data.action == 'importHistory'">
+      <div><h2 mat-dialog-title>Import History</h2></div>
+    </div>
+  </div>
+  <mat-dialog-content>
+    <div *ngIf="!dataLoad">
+      <div *ngIf="validationStatus == 'preview'">
+        <p class="import-val-indicate-content">
+          Select Columns from File and Map
+        </p>
+        <div class="import-val-select-sec">
+          <div class="import-val-select-list-header">
+            <div class="import-val-select-list-header-left-sec">
+              <span>
+                <!-- <pi-form-field label=" ">
+                  <input
+                    type="checkbox"
+                    pi-input
+                    [(ngModel)]="isSelectAll"
+                    [checked]="false"
+                    class="example-margin"
+                  />
+                </pi-form-field> -->
+                Column Lables
+              </span>
+            </div>
+            <div class="import-val-select-list-header-right-sec">
+              <span> Map Column with</span>
+            </div>
+          </div>
+          <div class="col-options">
+            <div class="import-content import-val-select-list-body-sec">
+              <form [formGroup]="importSkuForm">
+                <div
+                  formArrayName="skuAttributes"
+                  class="sku-attributes"
+                  [ngClass]="{ boxAttributes: !dataLength }"
+                >
+                  <div
+                    *ngFor="
+                      let attribute of skuAttributes.controls;
+                      let i = index
+                    "
+                    class="attr-fields import-val-selected-value"
+                  >
+                    <div class="import-val-selected-left-value">
+                      <span>
+                        <!-- <pi-form-field label=" ">
+                          <input
+                            type="checkbox"
+                            pi-input
+                            [(ngModel)]="isSelectAll"
+                            [checked]="false"
+                            class="example-margin"
+                          />
+                        </pi-form-field> -->
+                        {{ skuAttributesData[i]?.name }}
+                      </span>
+                    </div>
+                    <div class="import-val-selected-right-value">
+                      <pi-form-field [formGroupName]="i">
+                        <pi-select
+                          [options]="selectOptions"
+                          idKey="key"
+                          nameKey="label"
+                          formControlName="selected_field"
+                          (onChange)="valChanged(importSkuForm)"
+                        ></pi-select>
+                      </pi-form-field>
+                      <div
+                        class="pi-error"
+                        *ngIf="
+                          importSkuForm.controls.skuAttributes.controls[i]
+                            .invalid && submitted
+                        "
+                      >
+                        Please Select {{ skuAttributesData[i]?.name }}
+                      </div>
+                    </div>
+                    <!-- <pi-form-field [formGroupName]="i">
+                      <label class="label-name">{{
+                        skuAttributesData[i]?.name
+                      }}</label>
+                      <span *ngIf="skuAttributesData[i]?.mandatory == 1"
+                        >*</span
+                      >
+                      <pi-select
+                        [options]="selectOptions"
+                        idKey="key"
+                        nameKey="label"
+                        formControlName="selected_field"
+                        (onChange)="valChanged(importSkuForm)"
+                      ></pi-select>
+                    </pi-form-field> -->
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div *ngIf="validationStatus == 'import'">Import Ready!</div> -->
+      <!-- <div>
+        <div class="loader" *ngIf="validationProcess"></div>
+        <div
+          class="loader-text no-data-grid"
+          *ngIf="validationProcess && validationStatus == 'initial'"
+        >
+          Validating file, please wait...
+        </div>
+      </div> -->
+    </div>
+    <!-- upload file content goes here-->
+    <div *ngIf="data.action == 'upload'">
+      <!-- <app-excel-uploader
+        (importSuccess)="importSuccess($event)"
+        (importStarts)="importStarts($event)"
+        (fileUploadDone)="fileUploadDone($event)"
+        (fileUploadStart)="fileUploadStart($event)"
+        [importdata]="impData"
+      >
+      </app-excel-uploader> -->
+      <app-chunk-uploader
+        (fileUploadDone)="fileUploadDone($event)"
+        (fileUploadStart)="fileUploadStart($event)"
+        [importdata]="impData"
+      >
+      </app-chunk-uploader>
+    </div>
+    <!-- preview for a file content goes here-->
+    <div class="preview-section" *ngIf="previewData?.length && !impProg">
+      <form [formGroup]="previewFilterForm" class="modal-container">
+        <div class="ad-form-attributes">
+          <div class="form-attributes">
+            <div class="date-picker-field">
+              <label class="label-name">Min Ad Start Date</label>
+              <input
+                class="datepicker"
+                (click)="openCalendar(startpicker)"
+                readonly="true"
+                placeholder="Start Date"
+                formControlName="start_date"
+                [min]="previewStartMinDate"
+                [max]="previewStartMaxDate"
+                (focus)="openCalendar(startpicker)"
+                (dateChange)="dateValueChange('start_date', $event)"
+                [matDatepicker]="startpicker"
+                pi-input
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="startpicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #startpicker></mat-datepicker>
+            </div>
+          </div>
+        </div>
+
+        <div class="ad-form-attributes">
+          <div class="form-attributes">
+            <div class="date-picker-field">
+              <label class="label-name">Max Ad End Date</label>
+              <input
+                class="datepicker"
+                (click)="openCalendar(endpicker)"
+                readonly="true"
+                placeholder="End Date"
+                formControlName="end_date"
+                [min]="previewEndMinDate"
+                [max]="previewEndMaxDate"
+                (focus)="openCalendar(endpicker)"
+                (dateChange)="dateValueChange('end_date', $event)"
+                [matDatepicker]="endpicker"
+                pi-input
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="endpicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #endpicker></mat-datepicker>
+            </div>
+          </div>
+        </div>
+
+        <div class="structure-select">
+          <label class="label-name">Zones</label>
+          <pi-select
+            [options]="Zone_options"
+            formControlName="zones"
+            [(ngModel)]="selected_zones"
+            (onChange)="zoneValChanged()"
+            [multi]="true"
+            class="zones_list"
+          ></pi-select>
+        </div>
+      </form>
+
+      <p class="preview-confirm">
+        The following updates will be made per the uploaded file. Please review
+        and Confirm the Import.
+      </p>
+      <ag-grid-angular
+        class="ag-theme-balham stores-grid"
+        [rowData]="previewData"
+        [animateRows]="true"
+        rowHeight="40"
+        [enableSorting]="true"
+        [enableColResize]="true"
+        [columnDefs]="columnDefs"
+        (gridReady)="onGridReady($event, '')"
+      >
+      </ag-grid-angular>
+    </div>
+    <!-- Search for a file content goes here-->
+    <div
+      class="search-file"
+      *ngIf="data.action == 'search' || data.action == 'importHistory'"
+    >
+      <app-search
+        *ngIf="data.action == 'search'"
+        [search]="search"
+        (onSearch)="onSearch($event)"
+      ></app-search>
+
+      <pi-field-group
+        label="Show results for "
+        direction="row"
+        *ngIf="data.action == 'search'"
+      >
+        <pi-form-field
+          label="{{ adType.name }}"
+          *ngFor="let adType of adSelectRadioOptions"
+        >
+          <input
+            type="radio"
+            pi-input
+            name="{{ adType.key }}"
+            (change)="check(adType, $event)"
+            [checked]="adType.checked"
+          />
+        </pi-form-field>
+      </pi-field-group>
+      <ag-grid-angular
+        class="ag-theme-balham grid stores-grid lazy-load-grid"
+        [ngClass]="{
+          'fade-in': gridVisibility,
+          showGrid: gridVisibility,
+          'no-pointer-events': !pointerEvents
+        }"
+        [animateRows]="true"
+        [enableSorting]="false"
+        [enableColResize]="true"
+        rowHeight="40"
+        (gridReady)="onGridReady($event, data.action)"
+        [rowSelection]="'single'"
+        [rowModelType]="'infinite'"
+        [maxConcurrentDatasourceRequests]="1"
+        [cacheOverflowSize]="3"
+        [infiniteInitialRowCount]="0"
+        [cacheBlockSize]="30"
+        [maxBlocksInCache]="10"
+        [suppressColumnVirtualisation]="true"
+        [suppressDragLeaveHidesColumns]="true"
+        (rowSelected)="onRowSelected($event)"
+      >
+      </ag-grid-angular>
+      <!-- <div class="loader" *ngIf="dataLoad && !noData"></div>
+      <div class="loader-text no-data-grid" *ngIf="dataLoad && !noData">
+        Loading, please wait...
+      </div>
+      <div class="loader-text no-data-grid" *ngIf="!dataLoad && noData">
+        No Files Found ...
+      </div> -->
+    </div>
+
+    <!-- <p class="error-msg" *ngIf="btnDisable && changeTriggr">Please select to Compare Files</p> -->
+  </mat-dialog-content>
+
+  <div class=" mat-dialog-footer">
+    <div class="error-msg pi-error">{{ errorMsg }}</div>
+    <div class="button-actions box">
+      <button pi-button color="subtle" (click)="close()">Cancel</button>
+      <button
+        *ngIf="data.action != 'importHistory'"
+        pi-button
+        color="accent"
+        (click)="ImportColumn()"
+        [disabled]="dsbleBtn || (!dataLoad && noData)"
+      >
+        {{
+          validationStatus == 'initial'
+            ? 'Validate & Continue'
+            : validationStatus == 'preview'
+            ? 'Preview'
+            : 'Import File'
+        }}
+      </button>
+    </div>
+  </div>
+  <div class="loader" *ngIf="dataLoad && !noData"></div>
+
+  <div class="loader-text no-data-grid" *ngIf="dataLoad && !noData">
+    {{ loadingMsg ? loadingMsg : 'loading, please wait ...' }}
+  </div>
+  <div class="loader-text no-data-grid" *ngIf="!dataLoad && noData">
+    {{ noDataMsg ? noDataMsg : 'No data available' }}
+  </div>
+</div>

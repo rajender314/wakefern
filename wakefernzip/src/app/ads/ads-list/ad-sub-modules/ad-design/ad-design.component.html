@@ -1,0 +1,345 @@
+<pi-master-detail-view
+  size="sm"
+  [showDetail]="selectedPage"
+  *ngIf="totalData.length"
+  cdkDropListGroup
+>
+  <pi-master-view
+    [ngClass]="{
+      active: collapseFlag
+    }"
+  >
+    <div class="page-list-sec">
+      <div class="add-page-sec">
+        <div
+          class="add-icon"
+          [ngClass]="{
+            'not-allowed': !adsService.editPermission
+          }"
+        >
+          <span class="header-name">
+            <span class="page-icon"
+              ><em class="pixel-icons arrow icon-pages"></em></span
+            >Pages</span
+          >
+          <span
+            matTooltip="Add Page"
+            (click)="adPages()"
+            class="add-page-button"
+            [ngClass]="{
+              'pointer-event': !adsService.editPermission || !createPagePer
+            }"
+          >
+            <em class="pixel-icons arrow icon-plus"></em>
+          </span>
+
+          <span
+            (click)="collapsePageList()"
+            class="expand-collapse-sec icon-box"
+          >
+            <svg
+              width="7"
+              height="10"
+              viewBox="0 0 7 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              *ngIf="!collapseFlag"
+            >
+              <path
+                d="M4.99016 9.8416L0.183857 5.41243C0.125711 5.35893 0.0794614 5.29479 0.0478714 5.22385C0.0162815 5.1529 0 5.07661 0 4.99952C0 4.92243 0.0162815 4.84614 0.0478714 4.77519C0.0794614 4.70425 0.125711 4.64011 0.183857 4.58662L4.99016 0.158398C5.07508 0.0811231 5.18184 0.0292723 5.29728 0.00924494C5.41271 -0.0107825 5.53176 0.00188994 5.63973 0.0456983C5.7477 0.0895066 5.83988 0.162534 5.90488 0.255767C5.96988 0.349 6.00485 0.458359 6.00549 0.570348V9.42965C6.00485 9.54164 5.96988 9.651 5.90488 9.74423C5.83988 9.83747 5.7477 9.91049 5.63973 9.9543C5.53176 9.99811 5.41271 10.0108 5.29728 9.99075C5.18184 9.97073 5.07508 9.91888 4.99016 9.8416V9.8416Z"
+                fill="#5B5C65"
+              />
+            </svg>
+
+            <svg
+              width="7"
+              height="10"
+              viewBox="0 0 7 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              *ngIf="collapseFlag"
+            >
+              <path
+                d="M1.0157 9.8416L5.822 5.41243C5.88015 5.35893 5.9264 5.29479 5.95799 5.22385C5.98958 5.1529 6.00586 5.07661 6.00586 4.99952C6.00586 4.92243 5.98958 4.84614 5.95799 4.77519C5.9264 4.70425 5.88015 4.64011 5.822 4.58662L1.0157 0.158398C0.930779 0.0811231 0.824016 0.0292723 0.708584 0.00924494C0.593152 -0.0107825 0.474103 0.00188994 0.366129 0.0456983C0.258154 0.0895066 0.16598 0.162534 0.100982 0.255767C0.0359839 0.349 0.00100573 0.458359 0.000364932 0.570348V9.42965C0.00100573 9.54164 0.0359839 9.651 0.100982 9.74423C0.16598 9.83747 0.258154 9.91049 0.366129 9.9543C0.474103 9.99811 0.593152 10.0108 0.708584 9.99075C0.824016 9.97073 0.930779 9.91888 1.0157 9.8416V9.8416Z"
+                fill="#5B5C65"
+              />
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="page-list" *ngIf="totalData.length">
+        <div
+          *ngFor="let data of totalData; let i = index"
+          [ngClass]="{ active: data.id == selectedBaseTitle }"
+          class="cursor page-item"
+        >
+          <div
+            class="base-title"
+            [ngClass]="{ active: data.id == selectedBaseTitle }"
+            (click)="dropdownTrigger(data)"
+          >
+            <em
+              class="pixel-icons arrow icon-arrow-right {{
+                data.show ? 'arrow-up' : 'icon-arrow-right'
+              }}"
+            ></em>
+            {{ data.name }}
+          </div>
+          <div class="base-list" [class.invisible]="!data.show">
+            <div
+              *ngFor="let base of data.zoneInfo"
+              [ngClass]="{
+                active: data.id == selectedBaseTitle && base.key == selectedBase
+              }"
+              (click)="selectedVal(base, data)"
+              class="cursor base-item"
+            >
+              Zone {{ base.value }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </pi-master-view>
+  <pi-detail-view>
+    <div
+      class="page-designer"
+      *ngIf="totalData.length"
+      [ngClass]="{
+        'not-allowed': !adsService.editPermission
+      }"
+    >
+      <div
+        class="toolbar"
+        [ngClass]="{
+          'pointer-event': !adsService.editPermission
+        }"
+      >
+        <div
+          class="item cursor"
+          (click)="selectTool('block')"
+          [class.active]="selectedTool === 'block'"
+          title="Mod"
+        >
+          <em class="material-icons">picture_in_picture</em>
+        </div>
+        <div
+          class="item cursor"
+          (click)="selectTool('layout')"
+          [class.active]="selectedTool === 'layout'"
+          title="Mod Group"
+        >
+          <em class="material-icons">grid_on</em>
+        </div>
+        <!-- <div class="seperator"><em class="material-icons">more_horiz</em></div>
+        <div
+          class="item cursor"
+          (click)="$event.stopPropagation(); toggleInfo()"
+          [class.active]="showPageInfo"
+        >
+          <em class="material-icons">settings</em>
+          <div
+            class="info"
+            (click)="$event.stopPropagation()"
+            *ngIf="showPageInfo"
+          >
+            <pi-field-group>
+              <pi-form-field label="Rows">
+                <input
+                  type="text"
+                  pi-input
+                  value="{{ selectedPage.rows }}"
+                  readonly
+                />
+              </pi-form-field>
+              <span class="cross">x</span>
+              <pi-form-field label="Cols">
+                <input
+                  type="text"
+                  pi-input
+                  value="{{ selectedPage.cols }}"
+                  readonly
+                />
+              </pi-form-field>
+            </pi-field-group>
+            <pi-field-group label="Size">
+              <pi-form-field>
+                <input type="text" pi-input value="9" readonly />
+              </pi-form-field>
+              <span class="cross">x</span>
+              <pi-form-field>
+                <input type="text" pi-input value="21" readonly />
+              </pi-form-field>
+            </pi-field-group>
+          </div>
+        </div> -->
+      </div>
+      <div
+        @rightAnimate
+        class="page"
+        [ngStyle]="{
+          'width.px': selectedPage.width + 40,
+          'height.px': selectedPage.height + 40
+        }"
+        *ngIf="selectedPage"
+      >
+        <app-grid-layout-designer
+          [layout]="selectedPage"
+          [currentPage]="selectedBaseOrder"
+          [blockType]="selectedTool"
+          (onCreate)="onCreate($event)"
+          (onDeleteBlock)="deleteBlock($event)"
+          [ngClass]="{
+            'pointer-event': !adsService.editPermission || !createModPer
+          }"
+        ></app-grid-layout-designer>
+      </div>
+    </div>
+  </pi-detail-view>
+
+  <pi-master-view
+    class="right-pi-master-view"
+    [ngClass]="{
+      active: rightCollapseFlag,
+      'pointer-event': !adsService.editPermission || !createModPer
+    }"
+  >
+    <div>
+      <div class="add-page-sec">
+        <div class="add-icon right-icon">
+          <span
+            (click)="collapseRightPageList()"
+            class="expand-collapse-sec right-side-collapse"
+          >
+            <em
+              class="pixel-icons arrow right-collapse-icon  
+            {{ rightCollapseFlag ? 'icon-events' : 'icon-close' }}"
+              [matTooltip]="rightCollapseFlag ? 'View Promotions' : ''"
+            ></em>
+          </span>
+        </div>
+      </div>
+      <div class="example-box">
+        <!-- {{ number }} -->
+        <div class="promos-preview-sec">
+          <div class="preview-sec-main">
+            <div class="left-header promo-header">
+              <div class="title">
+                <div class="heading">
+                  <em class="pixel-icons icon-events"></em>
+                  <h3>Promotions</h3>
+                </div>
+              </div>
+            </div>
+            <div
+              class="promo-labels"
+              id="promoDetData"
+              cdkDropList
+              [cdkDropListData]="promoDetData"
+              (cdkDropListDropped)="drop($event)"
+            >
+              <div
+                class="label"
+                [cdkDragData]="detail"
+                cdkDrag
+                cdkDragBoundary=".pi-master-detail-view"
+                *ngFor="let detail of promoDetData"
+              >
+                <div class="info" *ngIf="promoDetData.length">
+                  <span class="badge">
+                    <em class="pixel-icons icon-label"></em>
+                    <p class="text-ellipsis">{{ detail.promo_id }}</p>
+                  </span>
+                  <span class="badge">{{ detail.flag }}</span>
+                </div>
+
+                <ng-container *ngIf="promoDetData.length">
+                  <p
+                    class="details font-bold"
+                    [matTooltip]="
+                      detail.group == '0'
+                        ? detail.blowline
+                        : detail.comb_blowline
+                    "
+                  >
+                    <!-- promo Blowline -->
+                    {{
+                      detail.group == '0'
+                        ? detail.blowline.substring(0, 50)
+                        : detail.comb_blowline.substring(0, 50)
+                    }}
+                    <span
+                      *ngIf="
+                        detail.group == '0'
+                          ? detail.blowline && detail.blowline.length > 50
+                          : detail.comb_blowline &&
+                            detail.comb_blowline.length > 50
+                      "
+                      >...</span
+                    >
+                  </p>
+                  <p class="details overline-field">
+                    {{
+                      detail.group == '0' ? detail.ad_size : detail.comb_ad_size
+                    }}
+                  </p>
+                  <p
+                    class="details overline-field"
+                    [matTooltip]="
+                      detail.group == '0'
+                        ? detail.overline_1
+                        : detail.comb_overline
+                    "
+                  >
+                    {{
+                      detail.group == '0'
+                        ? detail.overline_1.substring(0, 50)
+                        : detail.comb_overline.substring(0, 50)
+                    }}
+                    <span
+                      *ngIf="
+                        detail.group == '0'
+                          ? detail.overline_1 && detail.overline_1.length > 50
+                          : detail.comb_overline &&
+                            detail.comb_overline.length > 50
+                      "
+                      >...</span
+                    >
+                  </p>
+                </ng-container>
+              </div>
+              <div class="no-data" *ngIf="!promoDetData.length">
+                <div class="icon">
+                  <em class="pixel-icons icon-events"></em>
+                </div>
+                <p class="empty-msg">No Promotions Found</p>
+              </div>
+              <div class="loader" *ngIf="0"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </pi-master-view>
+</pi-master-detail-view>
+
+<div
+  class="no-data-grid"
+  *ngIf="!totalData.length && !progress"
+  [ngClass]="{
+    'not-allowed': !adsService.editPermission
+  }"
+>
+  <em class="pixel-icons icon-pages"></em>
+  <p>Pages Not Found.</p>
+  <button
+    pi-button
+    color="accent"
+    (click)="adPages()"
+    [ngClass]="{
+      'pointer-event': !adsService.editPermission || !createPagePer
+    }"
+  >
+    Create Page
+  </button>
+</div>

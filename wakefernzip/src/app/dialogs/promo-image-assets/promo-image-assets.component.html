@@ -1,0 +1,230 @@
+<div class="mat-dialog-heading promo-image-heading">
+  <div class="search-sec">
+    <em
+      class="pixel-icons icon-arrow-back cursor"
+      (click)="backToimgList()"
+      *ngIf="btnName == 'Save'"
+    ></em>
+    <h3 class="sub-heading text-capital" mat-dialog-title>Images</h3>
+    <button
+      pi-button
+      color="accent"
+      class="asset-search-btn"
+      (click)="searchAsset()"
+      *ngIf="btnName == 'Next'"
+    >
+      Search Images
+    </button>
+  </div>
+
+  <div class="input-sec" *ngIf="btnName == 'Next'">
+    <pi-form-field class="page-select">
+      <pi-form-field class="department-select sign-size" label="File Name">
+        <input
+          type="text"
+          pi-input
+          [placeholder]="'File Name'"
+          [(ngModel)]="filename"
+          (input)="valChangedQty($event, 'filename')"
+        />
+      </pi-form-field>
+      <pi-form-field class="department-select sign-size" label="UPC">
+        <input
+          type="text"
+          pi-input
+          [placeholder]="'UPC'"
+          [(ngModel)]="upcValue"
+          (input)="valChangedQty($event, 'upc')"
+        />
+      </pi-form-field>
+      <pi-form-field class="department-select sign-size" label="Product Name">
+        <input
+          type="text"
+          pi-input
+          [placeholder]="'Product Name'"
+          [(ngModel)]="productname"
+          (input)="valChangedQty($event, 'product_name')"
+        />
+      </pi-form-field>
+    </pi-form-field>
+
+    <!-- <button
+      pi-button
+      (click)="searchAsset()"
+      color="accent"
+      class="asset-search-btn"
+    >
+      Search Images
+    </button> -->
+  </div>
+  <!-- from edit mod page, right side images click not required any search and action button ,here condition added-->
+  <!-- <div >
+    <div >
+      <pi-form-field >
+        <input
+          type="text"
+          pi-input
+          [placeholder]="'Search...'"
+          (keyup.enter)="onEnter(imageAssestsInfo.search)"
+        />
+      </pi-form-field>
+    </div>
+  </div> -->
+</div>
+<mat-dialog-content class="image-assests-container promo-image-dialog-content">
+  <div *ngIf="btnName == 'Next'" class="first-view">
+    <div class="image-sec">
+      <div
+        class="image-preview-sel-sec"
+        infinite-scroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="19"
+        (scrolled)="onScrollDown()"
+        [infiniteScrollDisabled]="toggleClass"
+        [scrollWindow]="false"
+      >
+        <div class="total-assets" *ngIf="!dataLoading">
+          <div
+            *ngFor="let asset of cloneImgArray"
+            class="cursor"
+            [ngClass]="{
+              'not-allowed':
+                selectedAssetList.length >= 10 && asset.selected != true
+            }"
+          >
+            <span
+              class="asset-coll "
+              (click)="assetSelected(asset, i)"
+              [ngClass]="{
+                'no-hover-click':
+                  selectedAssetList.length >= 10 && asset.selected != true
+              }"
+            >
+              <div class="images-container cursor">
+                <!-- add active class on click-->
+                <div
+                  class="brand-img-overlay cursor"
+                  [ngClass]="{ active: asset.selected }"
+                ></div>
+                <div class="check-mark" [ngClass]="{ active: asset.selected }">
+                  <mat-icon class="mat-icon material-icons">check</mat-icon>
+                </div>
+                <img
+                  [src]="asset.image_path"
+                  alt="image"
+                  class="images-preview"
+                />
+              </div>
+              <p
+                class="product-name"
+                [matTooltip]="asset['xmp:wakefern-product-name']"
+                matTooltipPosition="right"
+              >
+                {{
+                  asset['xmp:wakefern-product-name']
+                    ? asset['xmp:wakefern-product-name']
+                    : '--'
+                }}
+              </p>
+              <div
+                class="meta-data"
+                [matTooltip]="asset['xmp:wakefern-upc-plu']"
+              >
+                <p>
+                  {{
+                    asset['xmp:wakefern-upc-plu']
+                      ? asset['xmp:wakefern-upc-plu']
+                      : '--'
+                  }}
+                </p>
+              </div>
+            </span>
+          </div>
+        </div>
+        <div>
+          <div class="spinner" *ngIf="toggleClass">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="loader" *ngIf="dataLoading"></div>
+    <!-- <div class="right-border"></div> -->
+    <div class="no-content-msg">
+      <!-- 'noExistingLogosMsg && '-- removed this condition, for testing-->
+      <!-- <div class="no-logo-sec"></div> -->
+      <!-- *ngIf="assetType != 'icon_path'" -->
+      <span class="no-data-grid" *ngIf="noImgSelected">No Images Selected</span>
+      <span class="no-data-grid" *ngIf="noImgFound && !dataLoading"
+        >No Images found</span
+      >
+    </div>
+  </div>
+  <div *ngIf="btnName == 'Save'" class="second-view">
+    <div
+      class="image-assign"
+      *ngFor="let image of selectedAssetList; let i = index"
+    >
+      <!-- perform ngfor at this div or this class-->
+      <div class="assign-sec">
+        <div class="image-view">
+          <img [src]="_sanitizer.bypassSecurityTrustUrl(image.image_path)" />
+          <p
+            class="product-name"
+            [matTooltip]="image['xmp:wakefern-product-name']"
+            matTooltipPosition="right"
+          >
+            {{
+              image['xmp:wakefern-product-name']
+                ? image['xmp:wakefern-product-name']
+                : '--'
+            }}
+          </p>
+          <div class="meta-data" [matTooltip]="image['xmp:wakefern-upc-plu']">
+            <p>
+              {{
+                image['xmp:wakefern-upc-plu']
+                  ? image['xmp:wakefern-upc-plu']
+                  : '--'
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="image-assign-view">
+          <label class="label-name">Assign Image to </label>
+          <pi-select
+            [options]="imageDropdownList"
+            (onChange)="onImgChanges($event, i, image)"
+          >
+          </pi-select>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="mat-dialog-footer">
+  <div>
+    <p
+      *ngIf="selectedAssetList.length >= 10 && btnName == 'Next'"
+      class="pi-error"
+    >
+      Maximum images have been selected.
+      <!-- {{ data.from == 'images' ? 12 : 4 }} -->
+    </p>
+  </div>
+  <div>
+    <button pi-button (click)="close()">Cancel</button>
+    <button
+      pi-button
+      color="accent"
+      class="apply-btn"
+      [disabled]="disableSave"
+      (click)="saveImages(btnName)"
+    >
+      {{ btnName }}
+    </button>
+  </div>
+</mat-dialog-actions>

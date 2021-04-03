@@ -1,0 +1,15 @@
+<pi-form-field>
+  <!-- <input
+    type="checkbox"
+    [(ngModel)]="chkVal"
+    (change)="this.refresh(this.params)"
+  /> -->
+  <span
+    [ngClass]="{
+      'checkbox-checked': chkVal == 'true' || chkVal == '1',
+      'checkbox-unchecked': chkVal != 'true' && chkVal != '1'
+    }"
+    (click)="this.refresh(this.params)"
+  ></span>
+  <!-- <span class="checkbox-unchecked" *ngIf="!chkVal" (click)="this.refresh(this.params)"></span> -->
+</pi-form-field>

@@ -1,0 +1,156 @@
+<div class="offer-import-dialog" @rightAnimate>
+  <div class="settings-section sku ">
+    <div class="section-header mat-dialog-heading">
+      <div class="header-left-sec">
+        <em (click)="close()" class="pixel-icons icon-arrow-back"></em>
+        <!-- <div class="left-border"></div> -->
+        <h2 class="heading mat-dialog-title">
+          Import items
+          <span class="sub-heading import-sub-heading">
+            (Supported formats <span>.csv,</span> Max file size 300 MB)</span
+          >
+        </h2>
+      </div>
+      <div class="header-right-sec">
+        <!-- <app-search
+          [search]="search"
+          (onSearch)="onSearch($event)"
+        ></app-search> -->
+        <button
+          pi-button
+          (click)="importValidationDailog({ action: 'upload' })"
+        >
+          upload
+        </button>
+        <!-- <button
+          pi-button
+          color="accent"
+          (click)="importValidationDailog({ action: 'vc' })"
+          [disabled]="(!dataLoad && noData) || disValBtn"
+        >
+          validate & continue
+        </button> -->
+        <!-- <div class="search-sec">
+  
+            </div> -->
+      </div>
+      <!-- <div class="section-inner-header">
+      </div> -->
+    </div>
+    <div class="inner-section">
+      <!-- <div class="import-sku">
+          <app-excel-uploader
+            (importSuccess)="importSuccess($event)"
+            (importStarts)="importStarts($event)"
+            (fileUploadDone)="fileUploadDone($event)"
+            (fileUploadStart)="fileUploadStart($event)"
+            [importdata]="impData"
+          >
+          </app-excel-uploader>
+        </div> -->
+      <div class="import-history-details">
+        <div class="import-history-heading">
+          <!-- <h2 class="heading">Import History</h2> -->
+          <!-- <span
+            class="primary-color"
+            (click)="seeTotalImportHistory('getUpcHistory', listData)"
+            >See All</span
+          > -->
+        </div>
+        <div class="import-files-grid">
+          <ag-grid-angular
+            *ngIf="rowData?.length"
+            class="ag-theme-balham grid stores-grid lazy-load-grid  "
+            [ngClass]="{
+              'fade-in': gridVisibility,
+              showGrid: gridVisibility,
+              'no-pointer-events': !pointerEvents
+            }"
+            [rowData]="rowData"
+            [animateRows]="true"
+            [enableSorting]="true"
+            [enableColResize]="true"
+            rowHeight="50"
+            [columnDefs]="columnDefs"
+            (gridReady)="onGridReady($event)"
+            [suppressColumnVirtualisation]="true"
+            [suppressDragLeaveHidesColumns]="true"
+            (rowSelected)="onRowSelected($event)"
+          >
+          </ag-grid-angular>
+        </div>
+        <div class="loader" *ngIf="dataLoad && !noData"></div>
+        <div class="loader-text no-data-grid" *ngIf="dataLoad && !noData">
+          Loading, please wait...
+        </div>
+        <!-- <div class="loader-text no-data-grid" *ngIf="!dataLoad && noData">
+          {{
+            authStatus
+              ? 'No Files Found'
+              : 'Authorization failed, Update the token file'
+          }}
+        </div> -->
+      </div>
+      <!-- <div class="loader" *ngIf="!noData && progress"></div>
+        <div class="loader-text no-data-grid" *ngIf="!noData && progress">
+          Loading, please wait...
+        </div> -->
+    </div>
+  </div>
+
+  <!-- <div
+      class="mat-dialog-footer mat-dialog-footer-empty-error import-dialog-footer"
+    >
+      <div class="import-dialog-footer-inner-sec">
+        <div
+          class="buttons-footer button-actions"
+          *ngIf="!isNxtScreen && !displayNone && isPreview"
+        >
+          <button pi-button color="subtle" (click)="backToScreen()">
+            Cancel
+          </button>
+          <button
+            pi-button
+            color="accent"
+            [disabled]="!rowData.length"
+            (click)="save(importSkuForm)"
+          >
+            Import
+          </button>
+        </div>
+
+        <div
+          class="buttons-footer button-actions"
+          *ngIf="isNxtScreen && !isPreview && !displayNone"
+        >
+          <button pi-button (click)="closeDialog()" color="subtle">
+            Cancel
+          </button>
+          <button
+            pi-button
+            color="accent"
+            class="apply-btn"
+            (click)="viewScreen(importSkuForm)"
+          >
+            Preview
+          </button>
+        </div>
+
+        <div
+          class="buttons-footer button-actions"
+          *ngIf="!isNxtScreen && !isPreview"
+        >
+          <button pi-button (click)="close()" color="subtle">Cancel</button>
+          <button
+            pi-button
+            color="accent"
+            class="apply-btn"
+            (click)="nextNav()"
+            [disabled]="!fileUploadStatus"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div> -->
+</div>

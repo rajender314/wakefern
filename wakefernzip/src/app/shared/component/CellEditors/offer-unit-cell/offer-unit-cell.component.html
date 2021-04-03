@@ -1,0 +1,54 @@
+<div class="offerunit-dropdown">
+  <pi-select
+    *ngIf="params.column.colDef.field == 'edited_unit'"
+    [options]="offerUnitSelectOptions"
+    (onChange)="offerUnitChanged($event, offerUnitSelectOptions)"
+    [(ngModel)]="OfferUnitCellValue"
+  >
+  </pi-select>
+
+  <pi-select
+    *ngIf="params.column.colDef.field == 'variety_statements'"
+    [options]="varietyStatemntsOptions"
+    (onChange)="offerUnitChanged($event, varietyStatemntsOptions)"
+    [ngModel]="OfferUnitCellValue"
+    [multi]="true"
+  >
+  </pi-select>
+  <pi-select
+    *ngIf="params.column.colDef.field == 'edited_ad_bug'"
+    [options]="adBugOptions"
+    (onChange)="offerUnitChanged($event, adBugOptions)"
+    [ngModel]="OfferUnitCellValue"
+    [multi]="true"
+  >
+  </pi-select>
+  <pi-select
+    *ngIf="params.column.colDef.field == 'logo_01'"
+    [options]="iconOptions"
+    (onChange)="offerUnitChanged($event, iconOptions)"
+    [ngModel]="OfferUnitCellValue"
+  >
+  </pi-select>
+  <pi-select
+    *ngIf="params.column.colDef.field == 'logo_02'"
+    [options]="iconOptions"
+    (onChange)="offerUnitChanged($event, iconOptions)"
+    [ngModel]="OfferUnitCellValue"
+  >
+  </pi-select>
+  <pi-select
+    *ngIf="params.column.colDef.field == 'logo_03'"
+    [options]="iconOptions"
+    (onChange)="offerUnitChanged($event, iconOptions)"
+    [ngModel]="OfferUnitCellValue"
+  >
+  </pi-select>
+  <pi-select
+    *ngIf="params.column.colDef.field == 'logo_04'"
+    [options]="iconOptions"
+    (onChange)="offerUnitChanged($event, iconOptions)"
+    [ngModel]="OfferUnitCellValue"
+  >
+  </pi-select>
+</div>

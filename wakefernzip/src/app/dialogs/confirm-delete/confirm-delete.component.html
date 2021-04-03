@@ -1,0 +1,151 @@
+<div class="mat-dialog-heading" *ngIf="!process">
+  <!-- <h2 mat-dialog-title>{{ mode }} {{ data.rowData.label || data.title }}</h2> -->
+  <h2 mat-dialog-title>{{ mode == 'Split Mod' ? 'Pages' : mode }}</h2>
+  <!-- <button mat-icon-button tabindex="-1" (click)="closeDialog()">
+      <em class="pixel-icons icon-close"></em>
+    </button> -->
+</div>
+<mat-dialog-content
+  *ngIf="
+    !process &&
+    mode != 'Import' &&
+    mode != 'Split Mod' &&
+    mode != 'Update Zones' &&
+    data?.action != 'deltePreviewItems' &&
+    data.from != 'promoImageDel' &&
+    data.from != 'switchPromo'
+  "
+>
+  <span class="confirm-del-msg"
+    >Are you sure you want to {{ mode }} this {{ data.rowData.label }}?</span
+  >
+
+  <div class="structure-select" *ngIf="data.mode == 'export'">
+    <pi-form-field>
+      <label class="label-name">Zones</label>
+      <pi-select
+        [options]="zonesList"
+        [(ngModel)]="selected_zones"
+        (onChange)="zoneValChanged($event)"
+        [multi]="true"
+      ></pi-select>
+    </pi-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-content *ngIf="data.action == 'deltePreviewItems'">
+  <span class="confirm-del-msg"
+    >Are you sure you want to {{ data.mode }} this {{ data.label }}?</span
+  >
+</mat-dialog-content>
+<mat-dialog-content *ngIf="!process && mode == 'Import'">
+  <span class="confirm-del-msg"
+    >Importing a file will modify the existing data, Are you sure you want to
+    continue?</span
+  >
+</mat-dialog-content>
+<mat-dialog-content *ngIf="!process && mode == 'Update Zones'">
+  <span class="confirm-del-msg"
+    >Updating Zones will modify the existing stores data, Are you sure you want
+    to continue?</span
+  >
+</mat-dialog-content>
+<mat-dialog-content *ngIf="!process && mode == 'Split Mod'">
+  <span class="confirm-del-msg"
+    >Changes made will not be saved, Are you sure you want to continue?
+  </span>
+</mat-dialog-content>
+
+<mat-dialog-content *ngIf="!process && data.from == 'promoImageDel'">
+  <span class="confirm-del-msg"
+    >Are you sure you want to delete this image
+  </span>
+</mat-dialog-content>
+<mat-dialog-content
+  *ngIf="!process && data.from == 'switchPromo'"
+  class="save-change-content"
+>
+  <span class="alert-img"><img [src]="alertImg"/></span>
+  <span class="confirm-del-msg"
+    >Changes made will not be saved, Are you sure you want to continue?
+  </span>
+</mat-dialog-content>
+<div
+  class="btn-actions box mat-dialog-footer mat-dialog-footer-empty-error"
+  *ngIf="!process || data.from == 'promoImageDel'"
+>
+  <button
+    class="mat-button"
+    pi-button
+    color="subtle"
+    (click)="closeDialog()"
+    *ngIf="!process && data.from == 'switchPromo'"
+  >
+    Don't Save my Changes
+  </button>
+  <button
+    pi-button
+    color="accent"
+    class="mat-raised-button"
+    [disabled]="btnDisable"
+    (click)="delete()"
+    *ngIf="!process && data.from == 'switchPromo'"
+  >
+    Save my Changes
+  </button>
+  <button
+    class="mat-button"
+    pi-button
+    color="subtle"
+    (click)="closeDialog()"
+    *ngIf="!(!process && data.from == 'switchPromo')"
+  >
+    Cancel
+  </button>
+  <button
+    pi-button
+    color="accent"
+    class="mat-raised-button"
+    [disabled]="btnDisable"
+    (click)="delete()"
+    *ngIf="!(!process && data.from == 'switchPromo')"
+  >
+    {{
+      mode == 'Import'
+        ? 'Proceed'
+        : mode == 'Split Mod'
+        ? 'Proceed'
+        : mode == 'Update Zones'
+        ? 'Proceed'
+        : mode == 'Cancel'
+        ? 'Cancel Ad'
+        : data.from == 'switchPromo'
+        ? 'Please Save'
+        : mode
+    }}
+    <!-- Yes, {{ mode }} {{ data.rowData.label }} -->
+  </button>
+</div>
+<div [ngClass]="{ 'confirmation-sec': this.process }">
+  <div class="loader-sm" *ngIf="process"></div>
+  <div class="loading-msg" *ngIf="process">
+    {{
+      mode === 'Export'
+        ? 'Exporting,'
+        : mode === 'Download'
+        ? 'Downloading,'
+        : mode == 'Split Mod'
+        ? 'Adding,'
+        : mode == 'Update Zones'
+        ? 'Updating,'
+        : mode == 'Cancel Ad'
+        ? 'Cancelling,'
+        : mode == 'Lock'
+        ? 'Locking,'
+        : mode == 'UnLock'
+        ? 'UnLocking,'
+        : 'Deleting,'
+    }}
+    Please wait ...
+  </div>
+</div>

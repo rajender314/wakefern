@@ -1,0 +1,108 @@
+@import "../../../assets/styles/variable";
+@import "../../../assets/styles/mixins";
+
+.campaigns-container {
+  &.tabs-view {
+    .section-header {
+      margin: 10px auto 0;
+      max-width: 1200px;
+      padding: 0 20px;
+      border-bottom: 1px solid $dailog-header-border;
+      @include semibold-font;
+    }
+    .import-btn {
+      text-align: center;
+    }
+    .heading-tab {
+      max-width: 900px;
+      margin: 0 auto;
+      padding-bottom: 15px;
+      @include regular-font;
+    }
+  }
+}
+
+.radio-sec {
+  display: flex;
+  max-width: 1200px;
+  margin: 0px auto;
+  text-align: center;
+  /* display: inline-block; */
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+  p {
+    margin: 0px;
+    color: #4f5d76;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .radio-group-sec {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 25px;
+    .pi-field-group{
+      &.column{
+        margin: 0px;
+      }
+    }
+      // &.column {
+      //   margin-top: 0px;
+      //   margin-right: 15px;
+      //   cursor: pointer;
+        .page-select{
+          margin: 0px;
+          width: 200px;
+          text-align: left;
+          
+            pi-select {
+              .pi-select-input {
+                &.single {
+                 .selected-list{
+                   .opt{
+                     div{
+                       text-overflow: ellipsis;
+                       white-space: nowrap;
+                       overflow: hidden;
+                     }
+                   }
+                 }
+                }
+              } 
+            }
+            
+            
+          
+             
+       
+         
+         
+        }
+        // .pi-form-field {
+        //   &.radio {
+        //     margin-top: 0px;
+        //     margin-right: 15px;
+        //     display: inline-flex;
+        //   }
+        // }
+      
+    
+  }
+}
+
+app-comparision{
+  .campaigns-container{
+    .campaigns-section{
+      mat-tab-body{
+        &.mat-tab-body{
+          height: 100vh !important;
+          .upload-sec {
+            overflow-y: auto;
+            height: calc(100vh - 210px);
+          }
+        }
+      }
+    }
+  }
+}

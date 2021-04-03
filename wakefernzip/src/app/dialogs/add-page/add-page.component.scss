@@ -1,0 +1,119 @@
+mat-datepicker-toggle {
+  position: absolute;
+  right: 0px;
+}
+textarea {
+  width: 100%;
+}
+.ad-form-attributes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  &.create-form-attributes {
+    justify-content: flex-end;
+  }
+  .form-attributes {
+    width: calc(50% - 15px);
+    &.full-width-field {
+      width: 100%;
+      .pi-form-field {
+        max-width: 100%;
+        .pi-select-input {
+          &.multi {
+            pi-icon {
+              top: 16px;
+            }
+          }
+        }
+      }
+    }
+    &.create-page-attributes {
+      width: calc(50% - 0px);
+      // width: 40%;
+
+      &:first-child {
+        padding-right: 15px;
+      }
+      .pi-form-field {
+        max-width: 100%;
+      }
+      &.create-page-half-attributes {
+        width: calc(25% - 0px);
+        padding-right: 15px;
+        position: relative;
+        // width: 15%;
+        &:nth-child(odd) {
+          padding-right: 15px;
+          // width: 15%;
+          // width: calc(25% + 7px);
+          // &:after {
+          //   content: "X";
+          //   position: absolute;
+          //   right: 3px;
+          //   top: 44px;
+          //   color: #4f5d76;
+          // }
+        }
+
+        &:nth-child(6) {
+          padding-right: 0px;
+        }
+        // &:nth-child(odd) {
+        //   // width: calc(25% - 7px);
+        // }
+      }
+      &.create-page-dropdown-attributes {
+        width: 100%;
+        padding-right: 0px;
+      }
+    }
+
+    textarea {
+      resize: none;
+    }
+  }
+}
+// .pi-error {
+//   padding: 10px 0;
+// }
+.divsions_list {
+  .pi-select-input {
+    max-height: 90px;
+  }
+}
+
+.ads-dialog {
+  .modal-container {
+    .structure-select {
+      margin-bottom: 0px;
+      ngx-daterangepicker-material {
+        .md-drppicker {
+          .calendar {
+            @media screen and (max-width: 1365px) and (min-width: 1024px) {
+              float: none;
+            }
+          }
+        }
+      }
+    }
+    .pi-error {
+      margin-top: 3px;
+    }
+  }
+}
+
+// .add-page-dialog {
+//   min-height: 200px;
+//   .add-page-content {
+//     min-height: 180px !important;
+//   }
+// }
+.zones_list {
+  .pi-select-input {
+    &.multi {
+      .pi-select-search-input {
+        margin: 0px;
+      }
+    }
+  }
+}

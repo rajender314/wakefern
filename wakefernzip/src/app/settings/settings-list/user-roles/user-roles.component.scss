@@ -1,0 +1,61 @@
+.role-deatils {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin: 0 20px;
+  position: relative;
+  text-transform: capitalize;
+
+  .form-details {
+    height: calc(100vh - 105px);
+    overflow: scroll;
+
+    .smaller-text {
+      font-size: x-small;
+    }
+
+    .dynamic-form-content {
+      .children-permissions {
+        max-width: 600px;
+        .d-flex {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+    }
+  }
+  // footer section
+  .footer {
+    .btn-actions {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0 15px;
+      text-align: right;
+      max-width: 936px;
+      background: #fff;
+      z-index: 1;
+      .box {
+        border-top: 1px solid #dcdfeb;
+        padding: 10px 0;
+
+        .cancel-btn {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+
+.inner-detail-list {
+  overflow-y: auto;
+  height: calc(100vh - 135px);
+  mat-list-item {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

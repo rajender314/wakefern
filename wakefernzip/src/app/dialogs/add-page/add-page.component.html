@@ -1,0 +1,126 @@
+<div class="mat-dialog-heading"><h2 mat-dialog-title>Create Page</h2></div>
+<div class="mat-dialog-content add-page-content" *ngIf="formReady">
+  <form [formGroup]="createPageForm" class="modal-container">
+    <div
+      class="ad-form-attributes create-form-attributes"
+      formArrayName="adDetailsFormValues"
+    >
+      <div
+        class="form-attributes create-page-attributes"
+        *ngFor="let field of state.section; let i = index"
+        [ngClass]="[
+          field.db_column_key != 'page_order' &&
+          field.db_column_key != 'name' &&
+          (field.key == 'single_line_text' || field.key == 'number')
+            ? 'create-page-half-attributes'
+            : '',
+          field.key == 'multiple_choice'
+            ? 'create-page-dropdown-attributes'
+            : ''
+        ]"
+      >
+        <pi-form-field [formGroupName]="i">
+          <label class="label-name">{{ field.label | titlecase }}</label>
+          <span
+            class="required"
+            *ngIf="field.form_save_value.settings.mandatory"
+            >*</span
+          >
+          <div
+            class="structure-select"
+            *ngIf="field.key == 'single_line_text' || field.key == 'number'"
+            [ngClass]="{
+              'not-allowed': field.form_save_value.settings?.disabled
+            }"
+          >
+            <span
+              [ngClass]="{
+                'pointer-event': field.form_save_value.settings?.disabled
+              }"
+            >
+              <input
+                type="text"
+                formControlName="{{ field.db_column_key }}"
+                pi-input
+                [placeholder]="field.label"
+                (keypress)="allowNumber($event, field.key)"
+              />
+            </span>
+            <!-- <div
+            class="error pi-error"
+            *ngIf="errorMsg != '' && field.label == 'Ad Name'"
+          >
+            {{ errorMsg }}
+          </div> -->
+            <div
+              class="pi-error"
+              *ngIf="
+                (createPageForm.controls.adDetailsFormValues.controls[
+                  i
+                ].controls[field.db_column_key].hasError('required') ||
+                  createPageForm.controls.adDetailsFormValues.controls[
+                    i
+                  ].controls[field.db_column_key].hasError('whitespace')) &&
+                submitted
+              "
+            >
+              Please Enter {{ field.label | titlecase }}
+            </div>
+          </div>
+          <div class="structure-select">
+            <ng-container *ngIf="field.key == 'multiple_choice'">
+              <!-- <pi-select [options]="divisionsList" formControlName="{{ field.db_column_key }}"
+              *ngIf="field.db_column_key == 'divisions'" (onChange)="valChanged()" nameKey="divname" [multi]="true"
+              class="divsions_list"></pi-select>
+            <pi-select [options]="divisionsList" formControlName="{{ field.db_column_key }}"
+              *ngIf="field.db_column_key == 'unique_ad_id'" (onChange)="valChanged()" nameKey="divname" [multi]="true"
+              class="divsions_list"></pi-select> -->
+              <pi-select
+                [options]="field.options"
+                formControlName="{{ field.db_column_key }}"
+                (onChange)="valChanged(field.db_column_key)"
+                [(ngModel)]="selectedzones"
+                [multi]="true"
+                class="divsions_list zones_list"
+              ></pi-select>
+            </ng-container>
+            <div
+              class="pi-error"
+              *ngIf="
+                (createPageForm.controls.adDetailsFormValues.controls[
+                  i
+                ].controls[field.db_column_key].hasError('required') ||
+                  createPageForm.controls.adDetailsFormValues.controls[
+                    i
+                  ].controls[field.db_column_key].hasError('whitespace')) &&
+                submitted &&
+                field.key == 'multiple_choice'
+              "
+            >
+              Please Enter {{ field.label | titlecase }}
+            </div>
+          </div>
+        </pi-form-field>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="mat-dialog-footer">
+  <div class="error-msg">
+    <!-- <div class="pi-error" *ngIf="errorMsg != ''">{{ errorMsg }}</div> -->
+  </div>
+
+  <div class="button-actions box">
+    <button pi-button (click)="close()" color="subtle">Cancel</button>
+
+    <button
+      pi-button
+      color="accent"
+      class="apply-btn"
+      (click)="createPage(createPageForm)"
+    >
+      Create Page
+    </button>
+  </div>
+</div>
+<div class="loader" *ngIf="!formReady"></div>

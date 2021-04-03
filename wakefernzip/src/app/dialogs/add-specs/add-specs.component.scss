@@ -1,0 +1,11 @@
+pi-form-field {
+  .specInputDisabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    // pi-field{
+    //     .pi-select-input{
+    //         pointer-events: none;
+    //     }
+    // }
+  }
+}

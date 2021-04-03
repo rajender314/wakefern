@@ -1,0 +1,198 @@
+<div class="mat-dialog-heading">
+  <h2 mat-dialog-title>{{ listData?.label }}</h2>
+  <!-- <p class="custom-indicate-content">
+    Select columns to import from the file and continue the process of crushing
+  </p> -->
+</div>
+<mat-dialog-content>
+  <form [formGroup]="settingsListForm">
+    <div
+      class="structure-select custom-select-content-header"
+      formArrayName="settingsFormValues"
+    >
+      <ng-container *ngFor="let field of headersData; let i = index">
+        <pi-form-field [formGroupName]="i" class="custom-select-field">
+          <!-- [ngClass]="
+        headersData[i]?.type == 'single_line_text'
+          ? 'custom-select-input'
+          : 'custom-select-dropdown'
+      " -->
+          <label class="label-name"
+            >{{ headersData[i]?.label | titlecase }}
+          </label>
+          <span class="required" *ngIf="headersData[i]?.settings.mandatory">
+            *</span
+          >
+          <input
+            type="text"
+            *ngIf="
+              headersData[i]?.type == 'single_line_text' &&
+              headersData[i]?.db_column_key != 'icon_tags'
+            "
+            class="ak-field-text"
+            [formControlName]="headersData[i]?.db_column_key"
+            pi-input
+          />
+          <div
+            class="pi-error"
+            *ngIf="
+              settingsListForm.controls.settingsFormValues.controls[i].controls[
+                field.db_column_key
+              ].hasError('required') &&
+              submitted &&
+              field.key == 'single_line_text'
+            "
+          >
+            Please Enter {{ field.label | titlecase }}
+          </div>
+          <div
+            class="pi-error "
+            *ngIf="headersData[i]?.db_column_key === 'name'"
+          >
+            <span class="already-exist-msg">{{ error }}</span>
+          </div>
+          <input
+            type="text"
+            *ngIf="
+              headersData[i]?.type == 'single_line_text' &&
+              headersData[i]?.db_column_key == 'icon_tags'
+            "
+            class="ak-field-text"
+            [formControlName]="headersData[i]?.db_column_key"
+            pi-input
+            id="{{ headersData[i]?.db_column_key }}"
+            (input)="valChanged($event)"
+            [(ngModel)]="tagsList"
+          />
+          <pi-select
+            *ngIf="headersData[i]?.db_column_key === 'division_id'"
+            [options]="data.divisionsList"
+            nameKey="divname"
+            [multi]="headersData[i]?.settings.multi"
+            [formControlName]="headersData[i]?.db_column_key"
+          ></pi-select>
+          <pi-select
+            *ngIf="headersData[i]?.db_column_key === 'status'"
+            [options]="statusList"
+            [multi]="headersData[i]?.settings.multi"
+            [formControlName]="headersData[i]?.db_column_key"
+          ></pi-select>
+          <div
+            class="pi-error"
+            *ngIf="
+              settingsListForm.controls.settingsFormValues.controls[i].controls[
+                field.db_column_key
+              ].hasError('required') &&
+              submitted &&
+              field.key == 'dropdown'
+            "
+          >
+            Please Select {{ field.label | titlecase }}
+          </div>
+        </pi-form-field>
+      </ng-container>
+    </div>
+  </form>
+  <p class="custom-indicate-content">
+    All the selected columns are applicable for Crush, Compare and Export.
+  </p>
+  <div class="custom-select-sec">
+    <div class="custom-select-list-header">
+      <div class="custom-select-list-header-left-sec">
+        <span>Column Name</span>
+      </div>
+      <div class="custom-select-list-header-right-sec">
+        <span>Crush & Compare</span>
+        <span>
+          <pi-form-field label=" " matTooltip="Select All">
+            <input
+              type="checkbox"
+              pi-input
+              [(ngModel)]="isSelectAll"
+              [checked]="isSelectAll"
+              (change)="selectAll()"
+              class="example-margin"
+            /> </pi-form-field
+          >Show in Export</span
+        >
+      </div>
+    </div>
+    <div class="custom-select-list-body-sec">
+      <div
+        *ngFor="let option of columnsList; let i = index"
+        class="custom-selected-value"
+      >
+        <div class="custom-selected-left-value">
+          <span>{{ option.name }}</span>
+        </div>
+        <div class="custom-selected-right-value">
+          <div class="checkbox-sec">
+            <pi-form-field
+              label=" "
+              [ngClass]="{ 'disable-select': !option.is_edit }"
+            >
+              <input
+                type="checkbox"
+                pi-input
+                [(ngModel)]="!option.is_edit ? true : option.status"
+                [checked]="!option.is_edit ? true : option.status"
+                (change)="check(option)"
+                class="example-margin"
+              />
+            </pi-form-field>
+            <!-- <span class="checkmark"></span> -->
+          </div>
+          <div class="checkbox-sec">
+            <pi-form-field label=" ">
+              <input
+                type="checkbox"
+                pi-input
+                [(ngModel)]="option.is_export"
+                [checked]="option.is_export"
+                (change)="check(option)"
+                class="example-margin"
+              />
+            </pi-form-field>
+          </div>
+        </div>
+
+        <div>
+          <!--<pi-form-field label="{{ option.name }}" 
+      [ngClass]="{'disable-select': !option.is_edit}">
+        <input
+          type="checkbox"
+          pi-input
+          [(ngModel)]="!option.is_edit ? true : option.status"
+          [checked]="!option.is_edit ? true : option.status"
+          
+          (change)="check(option)"
+          class="example-margin"
+        />
+        
+      </pi-form-field> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <p class="error-msg" *ngIf="btnDisable && changeTriggr">Please select to Compare Files</p> -->
+</mat-dialog-content>
+<div class=" mat-dialog-footer ">
+  <div class="error-msg">
+    <div class="pi-error" *ngIf="submitted && !showError">
+      Please select at least one column from both the sections.
+    </div>
+  </div>
+  <div class="button-actions box">
+    <button pi-button color="subtle" (click)="closeDialog()">Cancel</button>
+    <button
+      pi-button
+      color="accent"
+      class="mat-raised-button"
+      [disabled]="btnDisable ? settingsListForm.pristine : false"
+      (click)="sendSel(settingsListForm)"
+    >
+      {{ data.type == 'edit' ? 'Update' : 'Add' }} {{ listData?.label }}
+    </button>
+  </div>
+</div>

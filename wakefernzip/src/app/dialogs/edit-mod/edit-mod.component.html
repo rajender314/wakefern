@@ -1,0 +1,1659 @@
+<div>
+  <pi-master-detail-view
+    class="editmod-dialog"
+    [ngClass]="{ promos: data.fromComp == 'promotions' }"
+  >
+    <pi-detail-view class="editmod-modal-content">
+      <div class="specs-header" *ngIf="data.fromComp == 'pages'">
+        <div class="mat-dialog-heading">
+          <em class="pixel-icons icon-arrow-back cursor" (click)="close()"></em>
+          <h2 mat-dialog-title>
+            page {{ selectedPageData.page_order }} - mod
+            {{ activeModData.mod_order }}
+          </h2>
+        </div>
+        <div class="button-actions box edit-mod-actions ">
+          <!-- <button class="ak-button ak-button__appearance-default" pi-button>
+            Reset
+          </button> -->
+        </div>
+      </div>
+      <div class="editmod-content">
+        <div
+          class="preview-sec-main"
+          *ngIf="data.fromComp == 'pages'"
+          [ngClass]="{
+            'not-allowed': !adsService.editPermission
+          }"
+        >
+          <!-- *ngIf="selectedPageData.icons.length != 0" -->
+          <div
+            class="page-preview"
+            [ngClass]="{
+              'pointer-event': !adsService.editPermission
+            }"
+          >
+            <div class="page-preview-content">
+              <div class="page-preview-left-content">
+                <p
+                  class="page-preview-main-content"
+                  [ngClass]="{
+                    'no-content':
+                      !activeModData?.headline && !activeModData?.body_copy
+                  }"
+                  [matTooltip]="activeModData?.headline"
+                >
+                  {{
+                    activeModData?.headline
+                      ? activeModData.headline.substring(0, 25)
+                      : ''
+                  }}
+                  <span
+                    *ngIf="
+                      activeModData.headline &&
+                      activeModData.headline.length > 25
+                    "
+                    >...</span
+                  >
+                </p>
+                <p
+                  class="page-preview-main-content w-30"
+                  [ngClass]="{
+                    'no-content':
+                      !activeModData?.headline && !activeModData?.body_copy
+                  }"
+                ></p>
+                <p
+                  class="page-preview-sub-content"
+                  [ngClass]="{
+                    'no-content':
+                      !activeModData?.headline && !activeModData?.body_copy
+                  }"
+                  [matTooltip]="activeModData?.body_copy"
+                >
+                  {{
+                    activeModData?.body_copy
+                      ? activeModData.body_copy.substring(0, 50)
+                      : ''
+                  }}
+                  <span
+                    *ngIf="
+                      activeModData.body_copy &&
+                      activeModData.body_copy.length > 50
+                    "
+                    >...</span
+                  >
+                </p>
+                <p
+                  class="page-preview-sub-content"
+                  [ngClass]="{
+                    'no-content':
+                      !activeModData?.headline && !activeModData?.body_copy
+                  }"
+                ></p>
+                <p
+                  class="page-preview-sub-content"
+                  [ngClass]="{
+                    'no-content':
+                      !activeModData?.headline && !activeModData?.body_copy
+                  }"
+                ></p>
+                <p
+                  class="page-preview-sub-content w-30"
+                  [ngClass]="{
+                    'no-content':
+                      !activeModData?.headline && !activeModData?.body_copy
+                  }"
+                ></p>
+              </div>
+              <div class="page-preview-right-content">
+                <p
+                  class="page-preview-cost"
+                  [matTooltip]="
+                    activeModData?.price ? activeModData?.price : ''
+                  "
+                >
+                  {{ activeModData?.price ? activeModData?.price : '' }}
+                </p>
+              </div>
+            </div>
+            <div class="page-preview-images">
+              <!-- <div class="page-preview-images-header"><p>Images</p></div> -->
+              <p class="preview-img-header">Images</p>
+              <div class="preview-images" *ngIf="activeModData?.images.length">
+                <div
+                  class="img"
+                  *ngFor="
+                    let image of (activeModData?.images | slice: 0:12);
+                    let i = index
+                  "
+                >
+                  <img [src]="image.previewUrl" alt="image" />
+                  <div class="hover-icon">
+                    <em
+                      class="pixel-icons icon-delete-copy"
+                      (click)="
+                        deletePreviewItems(
+                          'image',
+                          'delete',
+                          'deltePreviewItems',
+                          image
+                        )
+                      "
+                    ></em>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="preview-images default-data"
+                *ngIf="!activeModData?.images.length"
+              >
+                <div class="img"><img [src]="image_url" alt="image" /></div>
+                <div class="img"><img [src]="image_url" alt="image" /></div>
+                <div class="img"><img [src]="image_url" alt="image" /></div>
+              </div>
+            </div>
+            <div class="page-preview-images">
+              <p class="preview-img-header">Logos</p>
+              <div class="preview-images" *ngIf="activeModData?.logos.length">
+                <div
+                  class="img"
+                  *ngFor="
+                    let image of (activeModData?.logos | slice: 0:12);
+                    let i = index
+                  "
+                >
+                  <img [src]="image.previewUrl" alt="image" />
+                  <div class="hover-icon">
+                    <em
+                      class="pixel-icons icon-delete-copy"
+                      (click)="
+                        deletePreviewItems(
+                          'logo',
+                          'delete',
+                          'deltePreviewItems',
+                          image
+                        )
+                      "
+                    ></em>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="preview-images default-data"
+                *ngIf="!activeModData?.logos.length"
+              >
+                <div class="img"><img [src]="image_url" alt="image" /></div>
+                <div class="img"><img [src]="image_url" alt="image" /></div>
+                <div class="img"><img [src]="image_url" alt="image" /></div>
+              </div>
+            </div>
+            <div class="page-preview-images">
+              <p class="preview-img-header">Icons</p>
+              <div class="preview-images" *ngIf="activeModData?.icons.length">
+                <div
+                  class="img"
+                  *ngFor="
+                    let image of (activeModData?.icons | slice: 0:12);
+                    let i = index
+                  "
+                >
+                  <img [src]="image.previewUrl" alt="image" />
+                  <div class="hover-icon">
+                    <em
+                      class="pixel-icons icon-delete-copy"
+                      (click)="
+                        deletePreviewItems(
+                          'icon',
+                          'delete',
+                          'deltePreviewItems',
+                          image
+                        )
+                      "
+                    ></em>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="preview-images default-data"
+                *ngIf="!activeModData?.icons.length"
+              >
+                <div class="img"><img [src]="image_url" alt="image" /></div>
+                <div class="img"><img [src]="image_url" alt="image" /></div>
+                <div class="img"><img [src]="image_url" alt="image" /></div>
+              </div>
+            </div>
+          </div>
+          <div class="ad-details-sec">
+            <div class="ad-details-header"><p>Ad Details</p></div>
+            <div
+              class="ad-details-content"
+              [ngClass]="{
+                'pointer-event': !adsService.editPermission
+              }"
+            >
+              <form [formGroup]="editModForm">
+                <div class="ad-details-add-more">
+                  <div class="input-field">
+                    <pi-form-field label="Headline Copy">
+                      <input type="text" pi-input formControlName="headline" />
+                    </pi-form-field>
+                  </div>
+                  <div class="input-field">
+                    <pi-form-field label="Body Copy">
+                      <input type="text" pi-input formControlName="body_copy" />
+                    </pi-form-field>
+                  </div>
+                  <!-- <div class="input-field">
+                    <pi-form-field label="Price" class="half-field-input">
+                      <input
+                        type="text"
+                        pi-input
+                        formControlName="price"
+                        appNumbersOnly
+                      />
+                    </pi-form-field>
+                  </div>
+                  <div class="input-field">
+                    <pi-form-field label="Offer type" class="half-field-input">
+                      <pi-select
+                        [options]="offerTypeArray"
+                        formControlName="offer_type_id"
+                      ></pi-select>
+                    </pi-form-field>
+                  </div> -->
+                </div>
+                <div>
+                  <!-- images, icons,logos search block-->
+                  <div class="ad-details-additional-values search-field-sec">
+                    <div class="search-sec">
+                      <pi-form-field label="Images">
+                        <app-search
+                          [search]="search"
+                          (onSearch)="onSearch($event, 'images')"
+                        ></app-search>
+                      </pi-form-field>
+                    </div>
+                    <div class="search-sec">
+                      <pi-form-field label="Logos">
+                        <app-search
+                          [search]="search"
+                          (onSearch)="onSearch($event, 'logos')"
+                        ></app-search>
+                      </pi-form-field>
+                    </div>
+                    <div class="search-sec">
+                      <pi-form-field label="Icons">
+                        <app-search
+                          [search]="search"
+                          (onSearch)="onSearch($event, 'icon_path')"
+                        ></app-search>
+                      </pi-form-field>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div
+          class="promos-preview-sec"
+          *ngIf="
+            data.fromComp == 'promotions' &&
+            (totalPromotionList.length ||
+              promoSearch.value != '' ||
+              this.selectedPromoFilter != '')
+          "
+        >
+          <div class="preview-sec-main">
+            <!-- <div class="promo-preview-sec-header">
+              <div class="title">
+                <div>
+                  <em class="pixel-icons icon-events"></em>
+                  <h2>Promotions</h2>
+                </div>
+                <em
+                  class="pixel-icons icon-filter cursor"
+                  [ngClass]="{
+                    'filter-updated': selectedPromoFilter == 'updated',
+                    'filter-inserted': selectedPromoFilter == 'inserted',
+                    'filter-deleted': selectedPromoFilter == 'deleted'
+                  }"
+                  #menuTrigger="matMenuTrigger"
+                  [matMenuTriggerFor]="menu"
+                  [matTooltip]="selectedPromoFilter"
+                ></em>
+                <mat-menu #menu="matMenu" class="promos-menu">
+                  <button
+                    mat-menu-item
+                    [ngClass]="{ active: selectedPromoFilter == filter.id }"
+                    *ngFor="let filter of promoFilterOptions"
+                    (click)="getFilteredPromotions(filter.id)"
+                  >
+                    <em class="pixel-icons icon-circle-filled-tick"></em
+                    >{{ filter.name }}
+                  </button>
+                </mat-menu>
+              </div>
+              <app-search
+                *ngIf="totalPromotionList.length || promoSearch.value"
+                [search]="promoSearch"
+                (onSearch)="onPromoSearch($event)"
+              ></app-search>
+            </div> -->
+            <div class="left-header">
+              <div class="title">
+                <div class="heading">
+                  <em class="pixel-icons icon-events"></em>
+                  <h3>Promotions</h3>
+                </div>
+                <div class="actions">
+                  <em
+                    class="pixel-icons icon-filter cursor"
+                    [ngClass]="{
+                      'filter-inserted': showRedDot
+                    }"
+                    [matTooltip]="filterTooltip"
+                    #menuTrigger="matMenuTrigger"
+                    [matMenuTriggerFor]="menu"
+                    (menuOpened)="preventCloseOnClickOut()"
+                    (menuClosed)="allowCloseOnClickOut()"
+                  ></em>
+                  <mat-menu #menu="matMenu" class="promos-menu filter-menu">
+                    <!-- <button
+                      mat-menu-item
+                      [ngClass]="{ active: selectedPromoFilter == filter.id }"
+                      *ngFor="let filter of promoFilterOptions"
+                      (click)="getFilteredPromotions(filter.id)"
+                    >
+                      <em class="pixel-icons icon-circle-filled-tick"></em
+                      >{{ filter.name }}
+                    </button> -->
+                    <div
+                      class="promo-filter-sec"
+                      *ngIf="showfltrPopover"
+                      (click)="eventStop($event)"
+                    >
+                      <div class="promo-filter-header">
+                        <span>Filter By</span>
+                        <span (click)="allowCloseOnClickOut('cancel')"
+                          ><em class="pixel-icons icon-close"></em
+                        ></span>
+                      </div>
+                      <div class="promo-filter-body">
+                        <div class="structure-select">
+                          <pi-form-field class="page-select" label="Status">
+                            <pi-select
+                              [options]="promoFilterOptions"
+                              placeholder="Select Status"
+                              [(ngModel)]="status_list"
+                              (onChange)="statusChanged($event)"
+                              [multi]="true"
+                            >
+                            </pi-select>
+                          </pi-form-field>
+                        </div>
+                        <div class="structure-select">
+                          <pi-form-field class="page-select" label="Zones">
+                            <pi-select
+                              [options]="zonesList"
+                              placeholder="Select zones"
+                              [(ngModel)]="zone_list"
+                              (onChange)="zoneChanged($event)"
+                              [multi]="true"
+                            >
+                            </pi-select>
+                          </pi-form-field>
+                        </div>
+                        <div class="structure-select">
+                          <pi-form-field class="page-select" label="Category">
+                            <pi-select
+                              [options]="categoryList"
+                              placeholder="Select Category"
+                              [(ngModel)]="category_list"
+                              (onChange)="catgoryChanged($event)"
+                              [multi]="true"
+                            >
+                            </pi-select>
+                          </pi-form-field>
+                        </div>
+                        <div class="structure-select">
+                          <pi-form-field class="page-select" label="Department">
+                            <pi-select
+                              [options]="departmentList"
+                              placeholder="Select Department"
+                              [(ngModel)]="department_list"
+                              (onChange)="departmentChanged($event)"
+                              [multi]="true"
+                            >
+                            </pi-select>
+                          </pi-form-field>
+                        </div>
+                        <div class="structure-select">
+                          <pi-form-field class="page-select" label="Priority">
+                            <pi-select
+                              [options]="ProrityList"
+                              placeholder="Select Priority"
+                              [(ngModel)]="priority_list"
+                              (onChange)="priorityChanged($event)"
+                              [multi]="true"
+                            >
+                            </pi-select>
+                          </pi-form-field>
+                        </div>
+                        <div class="structure-select">
+                          <pi-form-field
+                            class="page-select page-input"
+                            label="Page"
+                          >
+                            <input
+                              type="text"
+                              pi-input
+                              placeholder="Enter Page"
+                              (input)="pageChanged($event)"
+                              [(ngModel)]="pageList2"
+                            />
+                          </pi-form-field>
+                          <p class="pi-error" *ngIf="showPageValidation">
+                            Enter Numbers Only
+                          </p>
+                        </div>
+
+                        <div class="structure-select">
+                          <pi-form-field
+                            class="page-select page-input"
+                            label="Mod"
+                          >
+                            <input
+                              type="text"
+                              pi-input
+                              placeholder="Enter Mod"
+                              (input)="modChanged($event)"
+                              [(ngModel)]="modList2"
+                            />
+                          </pi-form-field>
+                          <p class="pi-error" *ngIf="showModValidationMsg">
+                            Enter Numbers Only
+                          </p>
+                        </div>
+
+                        <!-- <div class="structure-select">
+                          <pi-form-field class="page-select" label="Page">
+                            <pi-select 
+                            [options]="pageList"
+                            placeholder="Select Page"
+                            [(ngModel)]="page_list"
+                            (onChange)="pageChanged($event)"
+                             [multi]="true">
+                            </pi-select>
+                          </pi-form-field>
+                        </div>
+                        <div class="structure-select">
+                          <pi-form-field class="page-select" label="Mod">
+                            <pi-select 
+                            [options]="modList"
+                            placeholder="Select Mod"
+                            [(ngModel)]="mod_list"
+                            (onChange)="modChanged($event)"
+                             [multi]="true">
+                            </pi-select>
+                          </pi-form-field>
+                        </div> -->
+                      </div>
+                      <div class="promo-filter-footer">
+                        <button
+                          class="mat-button"
+                          pi-button
+                          color="subtle"
+                          (click)="clearFilters()"
+                        >
+                          Clear
+                        </button>
+                        <button
+                          class="mat-button"
+                          pi-button
+                          color="accent"
+                          (click)="getFilteredPromotions('groupFilter')"
+                        >
+                          Apply
+                        </button>
+                        <!-- <span (click)="clearFilters()">Clear</span>
+                        <span (click)="getFilteredPromotions('groupFilter')"
+                          >Apply</span
+                        > -->
+                      </div>
+                    </div>
+                  </mat-menu>
+                </div>
+              </div>
+              <app-search
+                *ngIf="totalPromotionList.length || promoSearch.value"
+                [search]="promoSearch"
+                (onSearch)="onPromoSearch($event)"
+              ></app-search>
+            </div>
+            <div
+              class="promo-labels"
+              infinite-scroll
+              [infiniteScrollDistance]="3"
+              [infiniteScrollThrottle]="19"
+              (scrolled)="onScrollDown()"
+              [scrollWindow]="false"
+            >
+              <div
+                class="label"
+                *ngFor="let promo of totalPromotionList; let i = index"
+                (click)="getActivePromo(promo)"
+                [ngClass]="{ active: promo.id == togglePanelPromoId }"
+              >
+                <div class="info">
+                  <span class="badge">
+                    <em class="pixel-icons icon-label"></em>
+                    <p class="text-ellipsis">{{ promo?.promo_id }}</p>
+                  </span>
+                  <span class="promo-status">
+                    <span
+                      class="badge"
+                      [ngClass]="{
+                        deleted: promo?.flag == 'deleted',
+                        updated: promo?.flag == 'updated',
+                        inserted: promo?.flag == 'inserted'
+                      }"
+                      >{{ promo?.flag }}</span
+                    >
+                    <span
+                      class="promo-inner-status"
+                      (click)="lockPromo(i, $event, promo)"
+                      [matTooltip]="
+                        totalPromotionList[i].lock == 1 ? 'Locked' : 'UnLocked'
+                      "
+                      *ngIf="promo.flag != 'deleted'"
+                      [ngClass]="{
+                        'not-allowed':
+                          !showLockIcon || !adsService.editPermission
+                      }"
+                    >
+                      <span
+                        class="material-icons lock-icon"
+                        *ngIf="totalPromotionList[i].lock == 1"
+                      >
+                        lock_outline
+                      </span>
+                      <span
+                        class="unlock-icon"
+                        *ngIf="totalPromotionList[i].lock == 2"
+                      >
+                        <svg
+                          width="18px"
+                          height="18px"
+                          viewBox="0 0 21 21"
+                          version="1.1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                        >
+                          <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+                          <!-- <title>Group</title> -->
+                          <desc>Created with Sketch.</desc>
+                          <defs></defs>
+                          <g
+                            id="Page-1"
+                            stroke="none"
+                            stroke-width="1"
+                            fill="none"
+                            fill-rule="evenodd"
+                          >
+                            <g id="Group" fill="#000000" fill-rule="nonzero">
+                              <g
+                                id="ic_lock_open_black_24px"
+                                transform="translate(0.000000, 7.000000)"
+                              >
+                                <path
+                                  d="M8,9 C9.1,9 10,8.1 10,7 C10,5.9 9.1,5 8,5 C6.9,5 6,5.9 6,7 C6,8.1 6.9,9 8,9 Z M14,0 L13,0 L11.1,0 L2,0 C0.9,0 0,0.9 0,2 L0,12 C0,13.1 0.9,14 2,14 L14,14 C15.1,14 16,13.1 16,12 L16,2 C16,0.9 15.1,0 14,0 Z M14,12 L2,12 L2,2 L14,2 L14,12 Z"
+                                  id="Shape"
+                                ></path>
+                              </g>
+                              <g
+                                id="ic_lock_open_black_24px-copy"
+                                transform="translate(16.000000, 3.500000) scale(-1, 1) translate(-16.000000, -3.500000) translate(11.000000, 0.000000)"
+                              >
+                                <path
+                                  d="M10,7 L10,5 C10,2.24 7.76,0 5,0 C2.24,0 0,2.24 0,5 L1.9,5 C1.9,3.29 3.29,1.9 5,1.9 C6.71,1.9 8.1,3.29 8.1,5 L8.1,7 L10,7 Z"
+                                  id="Shape"
+                                ></path>
+                              </g>
+                            </g>
+                          </g>
+                        </svg>
+                      </span>
+                    </span>
+                  </span>
+
+                  <!-- <span
+                    class="badge text-ellipsis"
+                    [matTooltip]="'TYPE ' + promo?.type"
+                    >TYPE: {{ promo?.type }}</span
+                  >
+                  <span
+                    class="badge text-ellipsis"
+                    [matTooltip]="'DATE ' + promo?.date"
+                    >DATE: {{ promo?.date }}</span
+                  >
+                  <span
+                    class="badge text-ellipsis"
+                    [matTooltip]="'GROUP ' + promo?.group"
+                    >GROUP: {{ promo?.group }}</span
+                  > -->
+                </div>
+                <ng-container *ngIf="promo.group == 0">
+                  <p
+                    class="details font-bold"
+                    *ngIf="promo?.blowline && promo?.blowline.length"
+                    [matTooltip]="promo?.blowline"
+                  >
+                    {{ promo?.blowline.substring(0, 50) }}
+                    <span *ngIf="promo?.blowline && promo?.blowline.length > 50"
+                      >...</span
+                    >
+                  </p>
+                  <p
+                    class="details overline-field"
+                    *ngIf="promo?.ad_size && promo?.ad_size.length"
+                    [matTooltip]="promo?.ad_size"
+                  >
+                    {{ promo?.ad_size.substring(0, 50) }}
+                    <span *ngIf="promo?.ad_size && promo?.ad_size.length > 50"
+                      >...</span
+                    >
+                  </p>
+                  <p
+                    class="details overline-field"
+                    *ngIf="promo?.overline_1 && promo?.overline_1.length"
+                    [matTooltip]="promo?.overline_1"
+                  >
+                    {{ promo?.overline_1.substring(0, 50) }}
+                    <span
+                      *ngIf="promo?.overline_1 && promo?.overline_1.length > 50"
+                      >...</span
+                    >
+                  </p>
+                  <p
+                    class="details overline-field"
+                    *ngIf="promo?.overline_2 && promo?.overline_2.length"
+                    [matTooltip]="promo?.overline_2"
+                  >
+                    {{ promo?.overline_2.substring(0, 50) }}
+                    <span
+                      *ngIf="promo?.overline_2 && promo?.overline_2.length > 50"
+                      >...</span
+                    >
+                  </p>
+                  <p
+                    class="details overline-field"
+                    *ngIf="promo?.overline_3 && promo?.overline_3.length"
+                    [matTooltip]="promo?.overline_3"
+                  >
+                    {{ promo?.overline_3.substring(0, 50) }}
+                    <span
+                      *ngIf="promo?.overline_3 && promo?.overline_3.length > 50"
+                      >...</span
+                    >
+                  </p>
+                  <p
+                    class="details overline-field"
+                    *ngIf="promo?.overline_4 && promo?.overline_4.length"
+                    [matTooltip]="promo?.overline_4"
+                  >
+                    {{ promo?.overline_4.substring(0, 50) }}
+                    <span
+                      *ngIf="promo?.overline_4 && promo?.overline_4.length > 50"
+                      >...</span
+                    >
+                  </p>
+                </ng-container>
+                <ng-container *ngIf="promo.group != 0">
+                  <p
+                    class="details font-bold"
+                    *ngIf="promo?.comb_blowline && promo?.comb_blowline.length"
+                    [matTooltip]="promo?.comb_blowline"
+                  >
+                    {{ promo?.comb_blowline.substring(0, 50) }}
+                    <span
+                      *ngIf="
+                        promo?.comb_blowline && promo?.comb_blowline.length > 50
+                      "
+                      >...</span
+                    >
+                  </p>
+                  <p
+                    class="details overline-field"
+                    *ngIf="promo?.comb_ad_size && promo?.comb_ad_size.length"
+                    [matTooltip]="promo?.comb_ad_size"
+                  >
+                    {{ promo?.comb_ad_size.substring(0, 50) }}
+                    <span
+                      *ngIf="
+                        promo?.comb_ad_size && promo?.comb_ad_size.length > 50
+                      "
+                      >...</span
+                    >
+                  </p>
+                  <p
+                    class="details overline-field"
+                    *ngIf="promo?.comb_overline && promo?.comb_overline.length"
+                    [matTooltip]="promo?.comb_overline"
+                  >
+                    {{ promo?.comb_overline.substring(0, 50) }}
+                    <span
+                      *ngIf="
+                        promo?.comb_overline && promo?.comb_overline.length > 50
+                      "
+                      >...</span
+                    >
+                  </p>
+                </ng-container>
+
+                <div class="info mb-0"></div>
+              </div>
+              <div
+                class="no-data"
+                *ngIf="!totalPromotionList.length && !dataLoad"
+              >
+                <div class="icon">
+                  <em class="pixel-icons icon-events"></em>
+                </div>
+                <p>No Promotions Found</p>
+              </div>
+              <div
+                class="loader"
+                *ngIf="dataLoad && !totalPromotionList.length"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-details">
+          <!-- *ngIf="selectedPageData.icons.length != 0" -->
+          <div class="tab-sec" *ngIf="data.fromComp == 'pages'">
+            <span class="tab-header" *ngIf="!noData">Promotions: </span>
+
+            <!-- <mat-tab-group
+              [selectedIndex]="selectedTabIndex"
+              (selectedTabChange)="promotionTabChanged($event)"
+              *ngIf="activeModPromotions.length && !noData"
+            >
+              <mat-tab
+                *ngFor="let label of activeModPromotions"
+                class="mat-tabs"
+              >
+                <ng-template mat-tab-label>
+                  <em class="pixel-icons icon-label" (click)="close()"></em>
+                  {{ label.promo_id }}
+                </ng-template>
+              </mat-tab>
+            </mat-tab-group> -->
+            <span
+              *ngIf="scrollButton"
+              (click)="scrollLeft()"
+              class="left-scroll"
+              [class.disable]="leftScrollButton"
+              ><em class="pixel-icons icon-arrow-left"></em
+            ></span>
+            <ul
+              #widgetsContent
+              class="mod-promos-tab-list"
+              id="modpromostablist"
+              [sortablejs]="activeModPromotions"
+              [sortablejsOptions]="sortOptions"
+              *ngIf="activeModPromotions.length && !noData"
+              [class.scroll-enable]="scrollButton"
+            >
+              <li
+                *ngFor="let label of activeModPromotions; let i = index"
+                class="mod-promo-tab"
+                (click)="promotionTabChanged({ index: i })"
+                [ngClass]="{
+                  active: selectedTabIndex == i
+                }"
+                id="modpromostab"
+              >
+                <em class="pixel-icons icon-label"></em> {{ label.promo_id }}
+              </li>
+            </ul>
+            <span
+              *ngIf="scrollButton"
+              (click)="scrollRight()"
+              class="right-scroll"
+              [class.disable]="rightScrollButton"
+            >
+              <em class="pixel-icons icon-arrow-right"></em>
+            </span>
+          </div>
+          <div
+            [ngClass]="{
+              'not-allowed': !adsService.editPermission
+            }"
+          >
+            <div
+              class="modal-container"
+              [ngClass]="{
+                'promos-container':
+                  data.fromComp == 'promotions' && totalPromotionList.length
+              }"
+            >
+              <!-- Promotions view grid-->
+              <div>
+                <div
+                  class="promotion-tabs-grid"
+                  *ngIf="data.fromComp == 'pages'"
+                >
+                  <mat-accordion>
+                    <mat-expansion-panel
+                      *ngFor="let promo of promoCollection"
+                      (opened)="(promo.id == togglePanelPromoId)"
+                      (closed)="(promo.id != togglePanelPromoId)"
+                      [expanded]="promo.id == togglePanelPromoId"
+                      (click)="togglePanel(promo)"
+                    >
+                      <mat-expansion-panel-header>
+                        <!-- <div class="promo-panel-heading">
+                                  <div class="header-headline-block">
+                                    {{promo.promo_id}} - {{promo.headline}}
+                                  </div>
+                                </div>
+                                <div class="header-price-unit-block"> 
+                                  <span class="header-price">{{promo.price | currency}}</span>
+                                  <span class="header-unit">{{promo.unit}}</span>
+                                </div> -->
+
+                        <div class="page-list-left-content promotion-header">
+                          <span class="promo-id">
+                            <em class="pixel-icons icon-label"></em>
+                            <span
+                              class="promo-id-block"
+                              [matTooltip]="promo.promo_id"
+                            >
+                              {{ promo.promo_id }}</span
+                            >
+                          </span>
+                          <span class="promo-content text-ellipsis">{{
+                            promo.headline
+                          }}</span>
+                        </div>
+                        <div class="page-list-right-content">
+                          <span class="promo-cost">${{ promo.price }}</span>
+                          <span
+                            class="promo-specs text-ellipsis"
+                            *ngIf="promo.offer_type"
+                            [matTooltip]="promo.offer_type"
+                          >
+                            <em class="pixel-icons icon-offer-type"></em
+                            >{{ promo.offer_type }}</span
+                          >
+                          <span class="promo-specs" *ngIf="!promo.offer_type"
+                            ><em class="pixel-icons icon-offer-type"></em
+                            >--</span
+                          >
+                          <span
+                            class="edit-promo-from-pages"
+                            (click)="editPromoFromPage(promo, $event)"
+                          >
+                            <span *ngIf="promo.id == togglePanelPromoId">
+                              <em class="pixel-icons icon-mod-edit mr-5"></em>
+                              Edit
+                            </span>
+                          </span>
+                        </div>
+                      </mat-expansion-panel-header>
+                      <!--Copy Statement -->
+
+                      <!--Images/Icons/Bugs -->
+
+                      <!--Pricing-->
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                </div>
+                <div
+                  class="promotion-tabs-grid"
+                  *ngIf="
+                    data.fromComp == 'promotions' &&
+                    totalPromotionList?.length &&
+                    !dataLoad
+                  "
+                >
+                  <!-- <div class="promo-panel-heading">
+                                  <div class="header-headline-block">
+                                    {{promo.promo_id}} - {{promo.headline}}
+                                  </div>
+                                </div>
+                                <div class="header-price-unit-block"> 
+                                  <span class="header-price">{{promo.price | currency}}</span>
+                                  <span class="header-unit">{{promo.unit}}</span>
+                                </div> -->
+                  <div class="promotion-header-sec">
+                    <div class="promotion-header from-promos">
+                      <div class="promo-headlines">
+                        <div class="desktop-view  text-ellipsis">
+                          <span class="promo-id">
+                            <em
+                              class="pixel-icons icon-label"
+                              *ngIf="activePromotion?.promo_id"
+                            ></em>
+                            <span
+                              class="promo-id-block"
+                              [matTooltip]="activePromotion?.promo_id"
+                            >
+                              {{ activePromotion?.promo_id }}</span
+                            >
+                          </span>
+                          <span class="promo-id text-ellipsis"
+                            >TYPE: {{ activePromotion?.type }}</span
+                          >
+                          <span class="promo-id text-ellipsis"
+                            >DATE: {{ activePromotion?.date }}</span
+                          >
+                          <span class="promo-id text-ellipsis hide-view"
+                            >GROUP: {{ activePromotion?.group }}</span
+                          >
+                          <span
+                            class="promo-id text-ellipsis hide-view blowline-text"
+                            [matTooltip]="activePromotion?.comb_blowline"
+                            >{{ activePromotion?.comb_blowline }}</span
+                          >
+                        </div>
+                        <!-- <div class="responsive-view">
+                          <span class="promo-id text-ellipsis"
+                            >GROUP: {{ activePromotion?.group }}</span
+                          >
+                          <span class="promo-id text-ellipsis">{{
+                            activePromotion?.comb_blowline
+                          }}</span>
+                        </div> -->
+                      </div>
+                      <div class="promo-actions">
+                        <div
+                          [ngClass]="{ 'not-allowed': 0 }"
+                          class="promo-inner-actions"
+                        >
+                          <div class="actions" matTooltip="Revision filter">
+                            <!-- <span>{{selectedPromoFilter}}</span> -->
+                            <!-- <em
+                              class="pixel-icons icon-filter cursor"
+                              [ngClass]="{
+                                'filter-updated':
+                                  selectedPromoFilter == 'updated',
+                                'filter-inserted':
+                                  selectedPromoFilter == 'inserted',
+                                'filter-deleted':
+                                  selectedPromoFilter == 'deleted'
+                              }"
+                              #menuTrigger="matMenuTrigger"
+                              [matMenuTriggerFor]="menu"
+                            ></em> -->
+                            <span
+                              class="filter-icon"
+                              #menuTrigger="matMenuTrigger"
+                              [matMenuTriggerFor]="menu"
+                            >
+                            </span>
+                            <mat-menu
+                              #menu="matMenu"
+                              class="promos-menu revision-menu"
+                            >
+                              <button
+                                mat-menu-item
+                                [ngClass]="{
+                                  active: selectedRevision == filter.id
+                                }"
+                                *ngFor="let filter of revisionList"
+                                (click)="getRevisionData(filter)"
+                              >
+                                <div>
+                                  <em
+                                    class="pixel-icons icon-circle-filled-tick"
+                                  ></em
+                                  ><span>{{ filter.name }}</span>
+                                </div>
+
+                                <p>{{ filter.revision_date }}</p>
+                              </button>
+                            </mat-menu>
+                          </div>
+                          <button
+                            pi-button
+                            [ngClass]="{
+                              'not-allowed':
+                                !this.canRedoDone ||
+                                !adsService.editPermission ||
+                                !adsService.promotionItems.items.length
+                            }"
+                            class="revert-btn-sec"
+                            [matTooltip]="!this.canRedoDone ? '' : 'Redo'"
+                          >
+                            <span
+                              class="revert-btn "
+                              (click)="domRevisions('redo')"
+                              [ngClass]="{
+                                'pointer-event':
+                                  !this.canRedoDone ||
+                                  !adsService.editPermission ||
+                                  !adsService.promotionItems.items.length
+                              }"
+                            >
+                              <em class="pixel-icons icon-redo"></em>
+                            </span>
+                            <span
+                              (click)="domRevisions('redo')"
+                              class="revert-btn-text"
+                              [ngClass]="{
+                                'pointer-event':
+                                  !this.canRedoDone ||
+                                  !adsService.editPermission ||
+                                  !adsService.promotionItems.items.length
+                              }"
+                              >Redo</span
+                            >
+                          </button>
+                          <button
+                            pi-button
+                            [ngClass]="{
+                              'not-allowed':
+                                !this.canUndoDone ||
+                                !adsService.editPermission ||
+                                !adsService.promotionItems.items.length
+                            }"
+                            class="revert-btn-sec"
+                            [matTooltip]="!this.canUndoDone ? '' : 'Undo'"
+                          >
+                            <span
+                              class="revert-btn cursor"
+                              (click)="domRevisions('undo')"
+                              [ngClass]="{
+                                'pointer-event':
+                                  !this.canUndoDone ||
+                                  !adsService.editPermission ||
+                                  !adsService.promotionItems.items.length
+                              }"
+                            >
+                              <em class="pixel-icons icon-undo"></em>
+                            </span>
+                            <span
+                              class="revert-btn-text"
+                              (click)="domRevisions('undo')"
+                              [ngClass]="{
+                                'pointer-event':
+                                  !this.canUndoDone ||
+                                  !adsService.editPermission ||
+                                  !adsService.promotionItems.items.length
+                              }"
+                              >Undo</span
+                            >
+                          </button>
+                        </div>
+                        <!-- <span
+                          class="sts"
+                          [ngClass]="{
+                            completed:
+                              activePromotion?.saving_status == 'completed'
+                          }"
+                          >{{ activePromotion?.saving_status }}</span
+                        > -->
+                        <!-- <button
+                          pi-button
+                          [ngClass]="{ 'pointer-event': !this.canRedoDone }"
+                          (click)="domRevisions('redo')"
+                        >
+                          Redo
+                        </button>
+                        <button
+                          pi-button
+                          [ngClass]="{
+                            'pointer-event': !this.canUndoDone
+                          }"
+                          (click)="domRevisions('undo')"
+                        >
+                          Undo
+                        </button> -->
+                        <button
+                          pi-button
+                          color="accent"
+                          class="apply-btn"
+                          (click)="savePromoData()"
+                          [ngClass]="{
+                            'pointer-event':
+                              this.disableSaveBtn || !adsService.editPermission
+                          }"
+                        >
+                          Save Changes
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="promotion-body-sec">
+                    <!--Copy Statement -->
+                    <div *ngIf="statementsData?.length" class="revision1-grid">
+                      <h2 class="sub-heading">Copy Statement</h2>
+                      <ag-grid-angular
+                        @rightAnimate
+                        class="ag-theme-balham grid offers-list lazy-load-grid"
+                        *ngIf="statementsData?.length"
+                        [ngClass]="{
+                          'fade-in': gridVisibility,
+                          showGrid: gridVisibility,
+                          'no-pointer-events-grid': !pointerEvents,
+                          'no-permission':
+                            !editCopyGrid ||
+                            !adsService.editPermission ||
+                            notAllowed
+                        }"
+                        [rowData]="statementsData"
+                        [animateRows]="true"
+                        rowHeight="40"
+                        [enableRangeSelection]="true"
+                        [enableFilter]="true"
+                        [enableSorting]="true"
+                        [enableColResize]="true"
+                        [columnDefs]="columnDefsStatement"
+                        [rowClassRules]="rowClassRules"
+                        [domLayout]="autoHeight"
+                        (gridReady)="onGridReady($event)"
+                        [suppressColumnVirtualisation]="true"
+                        [suppressRowClickSelection]="true"
+                        [pinnedTopRowData]="pinnedTopRowData"
+                        [getRowNodeId]="getRowNodeId"
+                        [rowSelection]="'multiple'"
+                        [rowMultiSelectWithClick]="true"
+                        (rowSelected)="onRowSelected($event)"
+                        (rangeSelectionChanged)="
+                          onRangeSelectionChanged($event)
+                        "
+                        [frameworkComponents]="frameworkComponents"
+                        (cellValueChanged)="
+                          onCellValueChanged(
+                            $event,
+                            statementsData,
+                            'copystatement'
+                          )
+                        "
+                        (pasteStart)="onPasteStart($event)"
+                        (pasteEnd)="onPasteEnd($event)"
+                        (cellClicked)="onCellClicked($event)"
+                        (cellKeyDown)="onCellKeyDown($event)"
+                        (cellKeyPress)="onCellKeyPress($event)"
+                        (rangeSelectionChanged)="
+                          onRangeSelectionChanged($event)
+                        "
+                      >
+                      </ag-grid-angular>
+                    </div>
+
+                    <!--Pricing-->
+                    <div *ngIf="pricingData?.length" class="revision2-grid">
+                      <div class="flex-heading mb-15">
+                        <h2 class="sub-heading">Pricing</h2>
+                        <div
+                          class="input-field"
+                          [ngClass]="{
+                            'not-allowed': activePromotion.flag == 'deleted'
+                          }"
+                        >
+                          <!-- <pi-form-field
+                            label="Select Offer Type"
+                            [ngClass]="{
+                              'no-hover-click': activePromotion.flag == 'deleted'
+                            }"
+                          >
+                            <pi-select
+                              [options]="offerTypeArray"
+                              [(ngModel)]="offer_type_price_grid"
+                              (onChange)="priceGridOfferTypeChange($event)"
+                            >
+                            </pi-select>
+                          </pi-form-field> -->
+                        </div>
+                      </div>
+                      <ag-grid-angular
+                        @rightAnimate
+                        class="ag-theme-balham grid offers-list lazy-load-grid"
+                        [ngClass]="{
+                          'fade-in': gridVisibilityRev2,
+                          showGrid: gridVisibilityRev2,
+                          'no-pointer-events-grid': !pointerEvents,
+                          'no-permission':
+                            !editPriceGrid ||
+                            !adsService.editPermission ||
+                            notAllowed
+                        }"
+                        [rowData]="pricingData"
+                        [animateRows]="true"
+                        rowHeight="40"
+                        [enableFilter]="true"
+                        [enableSorting]="true"
+                        [enableColResize]="true"
+                        [enableRangeSelection]="true"
+                        [columnDefs]="columnDefsPrice"
+                        [rowClassRules]="pricingClassRules"
+                        [domLayout]="autoHeight"
+                        [rowSelection]="'multiple'"
+                        [getRowNodeId]="getRowNodeId2"
+                        [pinnedTopRowData]="pinnedTopRowData2"
+                        (gridReady)="onGridReadyRev2($event)"
+                        [frameworkComponents]="frameworkComponents"
+                        (cellValueChanged)="
+                          onCellValueChanged($event, pricingData, 'pricingdata')
+                        "
+                        (cellKeyDown)="onCellKeyDown($event)"
+                        (cellClicked)="onCellClicked($event)"
+                        (cellKeyPress)="onCellKeyPress($event)"
+                        (pasteStart)="onPasteStart($event)"
+                        (pasteEnd)="onPasteEnd($event)"
+                      >
+                      </ag-grid-angular>
+                    </div>
+                    <!--Images/Icons/Bugs -->
+                    <div
+                      *ngIf="imagesData?.length"
+                      class="revision1-grid images-grid"
+                    >
+                      <h2 class="sub-heading">Images/Icons/Logos</h2>
+                      <ag-grid-angular
+                        @rightAnimate
+                        class="ag-theme-balham grid offers-list lazy-load-grid"
+                        [ngClass]="{
+                          'fade-in': gridVisibilityRev1,
+                          showGrid: gridVisibilityRev1,
+                          'no-pointer-events-grid': !pointerEvents,
+                          'no-permission':
+                            !editImageGrid ||
+                            !adsService.editPermission ||
+                            notAllowed
+                        }"
+                        [rowData]="imagesData"
+                        [animateRows]="true"
+                        rowHeight="40"
+                        [enableFilter]="true"
+                        [enableSorting]="true"
+                        [enableColResize]="true"
+                        [enableRangeSelection]="true"
+                        [suppressCopyRowsToClipboard]="true"
+                        [columnDefs]="columnDefsImage"
+                        [rowClassRules]="rowClassRules"
+                        [getRowNodeId]="getRowNodeId3"
+                        [domLayout]="autoHeight"
+                        (gridReady)="onGridReadyRev1($event)"
+                        [pinnedTopRowData]="pinnedTopRowData3"
+                        [frameworkComponents]="frameworkComponents"
+                        (cellValueChanged)="
+                          onCellValueChanged($event, imagesData, 'imagedata')
+                        "
+                        (cellClicked)="onCellClicked($event)"
+                        (cellDoubleClicked)="onCellDoubleClicked($event)"
+                        (cellKeyDown)="onCellKeyDown($event)"
+                        [suppressColumnVirtualisation]="true"
+                        (cellKeyPress)="onCellKeyPress($event)"
+                        (pasteStart)="onPasteStart($event)"
+                        (pasteEnd)="onPasteEnd($event)"
+                      >
+                      </ag-grid-angular>
+                    </div>
+
+                    <div *ngIf="spText?.length" class="revision1-grid">
+                      <h2 class="sub-heading">{{ spTextTitle }}</h2>
+                      <ag-grid-angular
+                        @rightAnimate
+                        class="ag-theme-balham grid offers-list lazy-load-grid"
+                        [ngClass]="{
+                          'fade-in': gridVisibilityRev3,
+                          showGrid: gridVisibilityRev3,
+                          'no-pointer-events-grid': !pointerEvents,
+                          'no-permission':
+                            !editSptextGrid ||
+                            !adsService.editPermission ||
+                            notAllowed
+                        }"
+                        [rowData]="spText"
+                        [animateRows]="true"
+                        rowHeight="40"
+                        [enableFilter]="true"
+                        [enableSorting]="true"
+                        [enableColResize]="true"
+                        [enableRangeSelection]="true"
+                        [suppressCopyRowsToClipboard]="true"
+                        [columnDefs]="columnDefsSptext"
+                        [rowClassRules]="rowClassRules"
+                        [getRowNodeId]="getRowNodeId4"
+                        [domLayout]="autoHeight"
+                        [pinnedTopRowData]="pinnedTopRowData4"
+                        (gridReady)="onGridReadyRev3($event)"
+                        [frameworkComponents]="frameworkComponents"
+                        (cellValueChanged)="
+                          onCellValueChanged($event, spText, 'sptext')
+                        "
+                        (cellClicked)="onCellClicked($event)"
+                        (cellDoubleClicked)="onCellDoubleClicked($event)"
+                        (cellKeyDown)="onCellKeyDown($event)"
+                        [suppressColumnVirtualisation]="true"
+                        (cellKeyPress)="onCellKeyPress($event)"
+                        (pasteStart)="onPasteStart($event)"
+                        (pasteEnd)="onPasteEnd($event)"
+                      >
+                      </ag-grid-angular>
+                    </div>
+
+                    <div *ngIf="paperText?.length" class="revision1-grid">
+                      <h2 class="sub-heading">{{ paperTextTitle }}</h2>
+                      <ag-grid-angular
+                        @rightAnimate
+                        class="ag-theme-balham grid offers-list lazy-load-grid"
+                        [ngClass]="{
+                          'fade-in': gridVisibilityRev4,
+                          showGrid: gridVisibilityRev4,
+                          'no-pointer-events-grid': !pointerEvents,
+                          'no-permission':
+                            !editPapertextGrid ||
+                            !adsService.editPermission ||
+                            notAllowed
+                        }"
+                        [rowData]="paperText"
+                        [animateRows]="true"
+                        rowHeight="40"
+                        [enableFilter]="true"
+                        [enableSorting]="true"
+                        [enableColResize]="true"
+                        [enableRangeSelection]="true"
+                        [suppressCopyRowsToClipboard]="true"
+                        [columnDefs]="columnDefsPapertext"
+                        [rowClassRules]="rowClassRules"
+                        [getRowNodeId]="getRowNodeId5"
+                        [pinnedTopRowData]="pinnedTopRowData5"
+                        [domLayout]="autoHeight"
+                        (gridReady)="onGridReadyRev4($event)"
+                        [frameworkComponents]="frameworkComponents"
+                        (cellValueChanged)="
+                          onCellValueChanged($event, paperText, 'papertext')
+                        "
+                        (cellClicked)="onCellClicked($event)"
+                        (cellDoubleClicked)="onCellDoubleClicked($event)"
+                        (cellKeyDown)="onCellKeyDown($event)"
+                        [suppressColumnVirtualisation]="true"
+                        (cellKeyPress)="onCellKeyPress($event)"
+                        (pasteStart)="onPasteStart($event)"
+                        (pasteEnd)="onPasteEnd($event)"
+                      >
+                      </ag-grid-angular>
+                    </div>
+
+                    <div *ngIf="mixMatchText?.length" class="revision1-grid">
+                      <h2 class="sub-heading">{{ mixMatchTextTitle }}</h2>
+                      <ag-grid-angular
+                        @rightAnimate
+                        class="ag-theme-balham grid offers-list lazy-load-grid"
+                        [ngClass]="{
+                          'fade-in': gridVisibilityRev5,
+                          showGrid: gridVisibilityRev5,
+                          'no-pointer-events-grid': !pointerEvents,
+                          'no-permission':
+                            !editMixmatchGrid ||
+                            !adsService.editPermission ||
+                            notAllowed
+                        }"
+                        [rowData]="mixMatchText"
+                        [animateRows]="true"
+                        rowHeight="40"
+                        [enableFilter]="true"
+                        [enableSorting]="true"
+                        [enableColResize]="true"
+                        [enableRangeSelection]="true"
+                        [suppressCopyRowsToClipboard]="true"
+                        [columnDefs]="columnDefsMixmatchtext"
+                        [rowClassRules]="rowClassRules"
+                        [getRowNodeId]="getRowNodeId6"
+                        [pinnedTopRowData]="pinnedTopRowData6"
+                        [domLayout]="autoHeight"
+                        (gridReady)="onGridReadyRev5($event)"
+                        [frameworkComponents]="frameworkComponents"
+                        (cellValueChanged)="
+                          onCellValueChanged(
+                            $event,
+                            mixMatchText,
+                            'mixmatchtext'
+                          )
+                        "
+                        (cellClicked)="onCellClicked($event)"
+                        (cellDoubleClicked)="onCellDoubleClicked($event)"
+                        (cellKeyDown)="onCellKeyDown($event)"
+                        [suppressColumnVirtualisation]="true"
+                        (cellKeyPress)="onCellKeyPress($event)"
+                        (pasteStart)="onPasteStart($event)"
+                        (pasteEnd)="onPasteEnd($event)"
+                      >
+                      </ag-grid-angular>
+                    </div>
+
+                    <div *ngIf="digitalText?.length" class="revision1-grid">
+                      <h2 class="sub-heading">Digital Text</h2>
+                      <ag-grid-angular
+                        @rightAnimate
+                        class="ag-theme-balham grid offers-list lazy-load-grid"
+                        [ngClass]="{
+                          'fade-in': gridVisibilityRev6,
+                          showGrid: gridVisibilityRev6,
+                          'no-pointer-events-grid': !pointerEvents,
+                          'no-permission':
+                            !editDigitalGrid ||
+                            !adsService.editPermission ||
+                            notAllowed
+                        }"
+                        [rowData]="digitalText"
+                        [animateRows]="true"
+                        rowHeight="40"
+                        [enableFilter]="true"
+                        [enableSorting]="true"
+                        [enableColResize]="true"
+                        [enableRangeSelection]="true"
+                        [suppressCopyRowsToClipboard]="true"
+                        [columnDefs]="columnDefsDigitaltext"
+                        [rowClassRules]="rowClassRules"
+                        [getRowNodeId]="getRowNodeId7"
+                        [pinnedTopRowData]="pinnedTopRowData7"
+                        [domLayout]="autoHeight"
+                        (gridReady)="onGridReadyRev6($event)"
+                        [frameworkComponents]="frameworkComponents"
+                        (cellValueChanged)="
+                          onCellValueChanged($event, digitalText, 'digitaltext')
+                        "
+                        (cellClicked)="onCellClicked($event)"
+                        (cellDoubleClicked)="onCellDoubleClicked($event)"
+                        (cellKeyDown)="onCellKeyDown($event)"
+                        [suppressColumnVirtualisation]="true"
+                        (cellKeyPress)="onCellKeyPress($event)"
+                        (pasteStart)="onPasteStart($event)"
+                        (pasteEnd)="onPasteEnd($event)"
+                      >
+                      </ag-grid-angular>
+                    </div>
+                    <!-- Related Promotions-->
+                    <div
+                      class="promo-mods-carousel-view"
+                      *ngIf="modInfoData?.length"
+                    >
+                      <div
+                        class="promotion-header from-promos mb-30"
+                        *ngIf="statementsData.length"
+                      >
+                        <span class="promo-id">
+                          <em class="pixel-icons icon-label"></em>
+                        </span>
+                        <span class="promo-content">Related Mods</span>
+                      </div>
+                      <owl-carousel-o [options]="customOwlOptions">
+                        <ng-container *ngFor="let mod of modInfoData">
+                          <ng-template carouselSlide [width]="230">
+                            <div
+                              class="promo-mod-preview"
+                              (click)="goToPagesFromPromo(mod, $event)"
+                              [ngClass]="{
+                                'no-content':
+                                  !mod?.body_copy &&
+                                  !mod?.headline &&
+                                  !mod?.price
+                              }"
+                            >
+                              <div class="promo-mod-preview-header">
+                                <p class="title">
+                                  mod {{ mod.mod_order }} - base
+                                  {{ mod.base_key }}
+                                </p>
+                                <p class="badge">
+                                  {{ mod?.versions.length }} versions
+                                </p>
+                              </div>
+                              <div class="promo-mod-preview-content">
+                                <div class="content">
+                                  <p
+                                    class="main-content"
+                                    [ngClass]="{
+                                      'no-content':
+                                        !mod?.body_copy &&
+                                        !mod?.headline &&
+                                        !mod?.price
+                                    }"
+                                    [matTooltip]="mod?.body_copy"
+                                  >
+                                    {{ mod?.body_copy.substr(0, 30) }}
+                                    <span *ngIf="mod?.body_copy.length > 30"
+                                      >...</span
+                                    >
+                                  </p>
+                                  <p
+                                    class="main-content w-30"
+                                    [ngClass]="{
+                                      'no-content':
+                                        !mod?.body_copy &&
+                                        !mod?.headline &&
+                                        !mod?.price
+                                    }"
+                                  ></p>
+                                  <p
+                                    class="sub-content"
+                                    [ngClass]="{
+                                      'no-content':
+                                        !mod?.body_copy &&
+                                        !mod?.headline &&
+                                        !mod?.price
+                                    }"
+                                    [matTooltip]="mod?.headline"
+                                  >
+                                    {{ mod?.headline.substring(0, 40) }}
+                                    <span *ngIf="mod?.headline.length > 40"
+                                      >...</span
+                                    >
+                                  </p>
+                                  <p
+                                    class="sub-content"
+                                    [ngClass]="{
+                                      'no-content':
+                                        !mod?.body_copy &&
+                                        !mod?.headline &&
+                                        !mod?.price
+                                    }"
+                                  ></p>
+                                  <p
+                                    class="sub-content"
+                                    [ngClass]="{
+                                      'no-content':
+                                        !mod?.body_copy &&
+                                        !mod?.headline &&
+                                        !mod?.price
+                                    }"
+                                  ></p>
+                                  <p
+                                    class="sub-content w-30"
+                                    [ngClass]="{
+                                      'no-content':
+                                        !mod?.body_copy &&
+                                        !mod?.headline &&
+                                        !mod?.price
+                                    }"
+                                  ></p>
+                                </div>
+                                <div class="price-details" *ngIf="mod?.price">
+                                  ${{ mod?.price }}
+                                </div>
+                              </div>
+                              <div
+                                class="promo-mod-preview-images"
+                                *ngIf="mod.images.length"
+                              >
+                                <div
+                                  class="image"
+                                  *ngFor="
+                                    let image of (mod.images | slice: 0:4);
+                                    let i = index
+                                  "
+                                >
+                                  <img [src]="image.previewUrl" alt="image" />
+                                  <span
+                                    class="preview-image-count"
+                                    *ngIf="mod.images.length > 4 && i > 2"
+                                    >+{{ mod.images.length - 4 }}</span
+                                  >
+                                </div>
+                              </div>
+                              <div
+                                class="promo-mod-preview-images no-images"
+                                *ngIf="!mod.images.length"
+                              >
+                                <div class="image">
+                                  <img src="{{ image_url }}" alt="image" />
+                                </div>
+                                <div class="image">
+                                  <img src="{{ image_url }}" alt="image" />
+                                </div>
+                                <div class="image">
+                                  <img src="{{ image_url }}" alt="image" />
+                                </div>
+                                <div class="image">
+                                  <img src="{{ image_url }}" alt="image" />
+                                </div>
+                              </div>
+                            </div>
+                          </ng-template>
+                        </ng-container>
+                      </owl-carousel-o>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div
+                class="loader-text no-data-grid no-page-content-sec"
+                *ngIf="noData"
+              >
+                <em class="pixel-icons icon-events"></em>
+  
+                <p class="no-page-content-content">No Promotions Found</p>
+              </div> -->
+              <div class="no-data" *ngIf="noData">
+                <div class="icon">
+                  <em class="pixel-icons icon-events"></em>
+                </div>
+                <p>No Promotions Found</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- right side mod deatils -->
+      </div>
+      <!-- noData referes to promiotions count-->
+      <div class="loader " *ngIf="dataLoad && !noData"></div>
+      <div class="loader-text no-data-grid" *ngIf="dataLoad && !noData">
+        <p>Loading Please Wait...</p>
+      </div>
+
+      <!-- <div *ngIf="activeModData.icons.length === 0">
+                <div class="loader-text no-data-grid">
+                  <p>No Data Found.</p>
+                </div>
+              </div> -->
+    </pi-detail-view>
+  </pi-master-detail-view>
+</div>

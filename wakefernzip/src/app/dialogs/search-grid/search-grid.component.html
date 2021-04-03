@@ -1,0 +1,52 @@
+<div class="mat-dialog-heading">
+  <h2 mat-dialog-title>Search</h2>
+  <span (click)="close()"> <em class="pixel-icons icon-close"></em> </span>
+</div>
+<div class="mat-dialog-content">
+  <div class="search-grid">
+    <ag-grid-angular
+      class="ag-theme-balham grid stores-grid lazy-load-grid  "
+      [ngClass]="{
+        'fade-in': gridVisibility,
+        showGrid: gridVisibility,
+        'no-pointer-events': !pointerEvents
+      }"
+      [animateRows]="true"
+      [enableSorting]="false"
+      [enableColResize]="true"
+      rowHeight="40"
+      (gridReady)="onGridReady($event)"
+      [rowSelection]="'single'"
+      [rowModelType]="'infinite'"
+      [maxConcurrentDatasourceRequests]="1"
+      [cacheOverflowSize]="3"
+      [infiniteInitialRowCount]="0"
+      [cacheBlockSize]="30"
+      [maxBlocksInCache]="10"
+      [suppressColumnVirtualisation]="true"
+      [suppressDragLeaveHidesColumns]="true"
+      (rowSelected)="onRowSelected($event)"
+    >
+    </ag-grid-angular>
+  </div>
+  <div class="loader" *ngIf="dataLoad && !noData"></div>
+  <div class="loader-text no-data-grid" *ngIf="dataLoad && !noData">
+    Loading, please wait...
+  </div>
+</div>
+<div class="mat-dialog-footer">
+  <div><!-- any error message display--></div>
+  <div class="button-actions box">
+    <button pi-button (click)="close()" color="subtle">Cancel</button>
+
+    <button
+      pi-button
+      color="accent"
+      class="apply-btn"
+      (click)="import()"
+      [disabled]="dataLoad && !noData"
+    >
+      Import
+    </button>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<!-- <div class="edit-window" *ngIf="params.column.colDef.type != 'image'">
+  <input
+    type="text"
+    [(ngModel)]="currentVal"
+    (input)="valChanged()"
+    autofocus
+  />
+  <div class="icons">
+    <em class="pixel-icons icon-search" (click)="searchVal()"></em>
+    <em
+      class="pixel-icons icon-copy-data"
+      (click)="updateVal()"
+      [matTooltip]="'Autofill'"
+    ></em>
+  </div>
+</div> -->
+
+<div class="edit-window" *ngIf="focusCell">
+  <img [src]="imgSrc" />
+  <div class="icons">
+    <em class="pixel-icons icon-delete" (click)="searchVal()"></em>
+  </div>
+</div>

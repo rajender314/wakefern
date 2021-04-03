@@ -1,0 +1,129 @@
+<div class="mat-dialog-heading" *ngIf="!dataLoad">
+  <h2 mat-dialog-title>
+    {{ data.mode == 'create' ? 'Create' : 'Edit' }} {{ data.title }}
+  </h2>
+  <span (click)="close()"> <em class="pixel-icons icon-close"></em> </span>
+</div>
+<div class="loader" *ngIf="dataLoad"></div>
+<div class="loading-msg" *ngIf="dataLoad">
+  {{ data.mode == 'create' ? 'Creating' : 'Updating' }} {{ data.title }} Please
+  Wait ...
+</div>
+<div class="mat-dialog-content">
+  <form [formGroup]="editListForm" class="modal-container" *ngIf="!dataLoad">
+    <div formArrayName="editFormValues">
+      <div *ngFor="let field of data.section; let i = index">
+        <pi-form-field [formGroupName]="i">
+          <label class="label-name">{{ field.label | titlecase }}</label>
+          <span class="required" *ngIf="field.required">*</span>
+          <div class="structure-select" *ngIf="field.type == 'text'">
+            <input type="text" formControlName="{{ field.name }}" pi-input />
+            <div
+              class="pi-error"
+              *ngIf="
+                editListForm.controls.editFormValues.controls[i].controls[
+                  field.name
+                ].hasError('required') && submitted
+              "
+            >
+              Please Enter {{ field.label | titlecase }}
+            </div>
+          </div>
+          <div class="structure-select" *ngIf="field.type == 'date'">
+            <div class="date-picker-field" *ngIf="field.name == 'start_date'">
+              <input
+                class="datepicker"
+                placeholder="Select Date"
+                formControlName="{{ field.name }}"
+                (click)="openCalendar(picker1)"
+                [min]="minDate['start_date']"
+                [max]="maxDate['start_date']"
+                (focus)="openCalendar(picker1)"
+                [matDatepicker]="picker1"
+                (dateChange)="dateValueChange(field, $event)"
+                pi-input
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker1"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </div>
+            <div class="date-picker-field" *ngIf="field.name == 'end_date'">
+              <input
+                class="datepicker"
+                placeholder="Select Date"
+                formControlName="{{ field.name }}"
+                (click)="openCalendar(picker1)"
+                (focus)="openCalendar(picker1)"
+                [matDatepicker]="picker1"
+                [min]="minDate['end_date']"
+                [max]="maxDate['end_date']"
+                (dateChange)="dateValueChange(field, $event)"
+                pi-input
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker1"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </div>
+          </div>
+          <div class="structure-select" *ngIf="field.type == 'button'">
+            <div>
+              <mat-button-toggle-group
+                [disabled]="disableCheck"
+                formControlName="{{ field.name }}"
+              >
+                <mat-button-toggle [value]="1"> Active</mat-button-toggle>
+                <mat-button-toggle [value]="2"> Inactive</mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+          </div>
+          <ng-container *ngIf="field.type == 'select'">
+            <pi-select
+              [options]="campaignData"
+              formControlName="{{ field.name }}"
+              *ngIf="field.name == 'campaign'"
+            ></pi-select>
+            <pi-select
+              [options]="eventTypes"
+              formControlName="{{ field.name }}"
+              *ngIf="field.name == 'event_type'"
+            ></pi-select>
+          </ng-container>
+          <div *ngIf="field.type == 'textarea'">
+            <textarea rows="5" formControlName="{{ field.name }}"></textarea>
+          </div>
+        </pi-form-field>
+        <div
+          class="pi-error"
+          *ngIf="
+            editListForm.controls.editFormValues.controls[i].controls[
+              field.name
+            ].hasError('required') &&
+            submitted &&
+            field.type != 'text'
+          "
+        >
+          Please Select {{ field.label | titlecase }}
+        </div>
+      </div>
+    </div>
+    <div class="pi-error">{{ errorMsg }}</div>
+  </form>
+</div>
+<div class="mat-dialog-footer">
+  <div class="button-actions box" *ngIf="!dataLoad">
+    <button pi-button (click)="close()" color="subtle">Cancel</button>
+    <button
+      pi-button
+      color="accent"
+      class="apply-btn"
+      (click)="update(editListForm)"
+      [disabled]="editListForm.pristine"
+    >
+      {{ data.mode == 'create' ? 'Create' : 'Update' }} {{ data.title }}
+    </button>
+  </div>
+</div>

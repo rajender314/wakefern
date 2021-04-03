@@ -1,0 +1,28 @@
+.edit-window {
+  min-height: 38px;
+  position: relative;
+  &,
+  input {
+    width: 100%;
+  }
+  input {
+    height: 38px;
+    padding: 5px 55px 5px 10px;
+    border: transparent;
+  }
+  .icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto 5px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    .icon-copy-data {
+      font-size: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

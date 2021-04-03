@@ -1,0 +1,337 @@
+<div class="mat-dialog-heading">
+  <h3 class="sub-heading text-capital" mat-dialog-title>
+    {{ assetType === 'icon_path' ? 'Icons' : assetType }}
+  </h3>
+  <!-- from edit mod page, right side images click not required any search and action button ,here condition added-->
+  <div class="search-sec" *ngIf="imageAssestsInfo.search != 'Selected Images'">
+    <div class="image-search">
+      <pi-form-field leftIcon="true">
+        <pi-icon name="icon-search"></pi-icon>
+        <input
+          type="text"
+          pi-input
+          [placeholder]="'Search...'"
+          [(ngModel)]="imageAssestsInfo.search"
+          (keyup.enter)="onEnter(imageAssestsInfo.search)"
+        />
+        <pi-icon
+          *ngIf="imageAssestsInfo.search"
+          (click)="
+            $event.stopPropagation();
+            imageAssestsInfo.search = '';
+            stopSearchProcess()
+          "
+          name="icon-close"
+        ></pi-icon>
+      </pi-form-field>
+    </div>
+  </div>
+  <button
+    *ngIf="data?.action != 'editModImages'"
+    pi-button
+    (click)="searchAsset()"
+    color="accent"
+    class="asset-search-btn"
+    [disabled]="
+      progress ||
+      !imageAssestsInfo.search ||
+      selectedUpc === 'Selected Images' ||
+      isEditUpc
+    "
+  >
+    Search {{ assetType === 'icon_path' ? 'Icons' : assetType }}
+  </button>
+</div>
+
+<mat-dialog-content
+  class="image-assests-container"
+  [class.image-dialog-container]="assetType === 'image' && imageUpcs.length"
+>
+  <!-- <mat-tab-group
+    #UPCsGroup
+    (selectedTabChange)="tabChanged($event)"
+    *ngIf="assetType === 'image'"
+  >
+    <mat-tab
+      #tab
+      *ngFor="let imageUpc of (imageUpcs | slice: 0:4)"
+      [label]="imageUpc"
+      [disabled]="!tab.isActive && progress"
+    >
+      <div class="total-assets" *ngIf="assestsCollection?.length">
+        <span
+          *ngFor="let asset of assestsCollection"
+          class="asset-coll"
+          (click)="assetSelected(asset)"
+        >
+          <div class="images-container">
+            <div
+              class="brand-img-overlay cursor"
+              [ngClass]="{ active: asset.selected }"
+            ></div>
+            <img
+              [src]="asset.thumbUrl"
+              alt="asset.asset_name"
+              class="images-preview"
+            />
+          </div>
+          <p
+            class="product-name"
+            [matTooltip]="asset.product_name"
+            matTooltipPosition="right"
+          >
+            {{ asset.product_name }}
+          </p>
+        </span>
+      </div>
+    </mat-tab>
+  </mat-tab-group> -->
+  <div class="image-sec">
+    <div
+      class="image-list-sec"
+      *ngIf="assetType === 'image' && fromComp != 'editMod'"
+    >
+      <div class="image-list-main-sec">
+        <div
+          class="image-list-inner-sec"
+          *ngFor="let imageUpc of imageUpcs; let i = index; let first = first"
+          [ngClass]="{
+            active: imageUpc == selectedUpc,
+            'pointer-event': imageUpc != selectedUpc && progress
+          }"
+          (click)="getImages(imageUpc, i)"
+        >
+          <div class="image-upc">
+            <span
+              class="upc-title"
+              *ngIf="!isEditUpc && imageUpc == selectedUpc"
+              [matTooltip]="imageUpc"
+              >{{ imageUpc }}</span
+            >
+            <span
+              class="upc-title"
+              *ngIf="!isEditUpc && imageUpc != selectedUpc"
+              [matTooltip]="imageUpc"
+              >{{ imageUpc }}</span
+            >
+            <span
+              class="upc-title"
+              *ngIf="isEditUpc && imageUpc != selectedUpc"
+              [matTooltip]="imageUpc"
+              >{{ imageUpc }}</span
+            >
+            <!-- <em
+              class="pixel-icons icon-pencil"
+              *ngIf="
+                !isEditUpc &&
+                (imageUpc == selectedUpc && selectedUpc != 'Selected Images')
+              "
+              (click)="editUpc()"
+            ></em> -->
+            <span
+              *ngIf="i == 0 && this.selectedAssests?.length"
+              class="count"
+              >{{ this.selectedAssests?.length }}</span
+            >
+          </div>
+
+          <div
+            class="edit-image-upc"
+            *ngIf="isEditUpc && imageUpc == selectedUpc"
+          >
+            <input
+              type="text"
+              pi-input
+              [(ngModel)]="imageUpc"
+              id="imgUpc"
+              (input)="valChanged(imageUpc, i)"
+            />
+            <!-- <mat-icon>check</mat-icon> -->
+            <em
+              class="pixel-icons icon-circle-filled-tick"
+              (click)="updateUpc(i)"
+            ></em>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right-border"></div>
+    <div
+      class="image-preview-sel-sec"
+      infinite-scroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="19"
+      (scrolled)="onScrollDown()"
+      [infiniteScrollDisabled]="toggleClass"
+      [scrollWindow]="false"
+    >
+      <div class="total-assets" *ngIf="assestsCollection?.length && !progress">
+        <div
+          *ngFor="let asset of assestsCollection"
+          [ngClass]="{
+            'not-allowed':
+              selectedAssests.length > (data.from == 'images' ? 5 : 5) &&
+              (data?.fromComp === 'editMod' ||
+                data?.fromComp == 'promo-view') &&
+              asset.selected != true
+          }"
+        >
+          <span
+            class="asset-coll"
+            (click)="assetSelected(asset)"
+            [ngClass]="{
+              'no-hover-click':
+                selectedAssests.length > (data.from == 'images' ? 5 : 5) &&
+                (data?.fromComp === 'editMod' ||
+                  data?.fromComp == 'promo-view') &&
+                asset.selected != true
+            }"
+          >
+            <div class="images-container">
+              <div
+                class="brand-img-overlay cursor"
+                [ngClass]="{ active: asset.selected }"
+              ></div>
+              <div class="check-mark" [ngClass]="{ active: asset.selected }">
+                <mat-icon class="mat-icon material-icons">check</mat-icon>
+              </div>
+              <img
+                [src]="asset.thumbUrl"
+                alt="asset.asset_name"
+                class="images-preview"
+              />
+            </div>
+            <p
+              class="product-name"
+              [matTooltip]="asset.product_name"
+              matTooltipPosition="right"
+            >
+              {{ asset.product_name?.substring(0, 25) }}
+              <span *ngIf="asset.product_name && asset.product_name.length > 25"
+                >...</span
+              >
+            </p>
+          </span>
+        </div>
+      </div>
+      <div class="spinner" *ngIf="toggleClass">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+      <div
+        class="no-content-msg"
+        *ngIf="noData && !progress && !assestsCollection?.length"
+      >
+        <span class="no-data-grid text-capital"
+          >{{ assetType === 'icon_path' ? 'Icons' : assetType }} not Found</span
+        >
+      </div>
+      <div
+        class="no-data-grid"
+        *ngIf="!progress && !noData && !assestsCollection.length"
+      >
+        <!-- 'noExistingLogosMsg && '-- removed this condition, for testing-->
+        <div
+          class="no-logo-sec"
+          [ngStyle]="{ 'background-image': 'url(' + noLogo + ')' }"
+        ></div>
+        <!-- *ngIf="assetType != 'icon_path'" -->
+        <span class=""
+          >Search for
+          {{ assetType === 'icon_path' ? 'icons' : assetType }}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- <div
+    *ngIf="
+      assetType === 'logos' ||
+      assetType === 'icon_path' ||
+      (assetType === 'images' && fromComp === 'editMod')
+    "
+  >
+    <div class="total-assets" *ngIf="assestsCollection?.length">
+      <span
+        *ngFor="let asset of assestsCollection"
+        class="asset-coll"
+        (click)="assetSelected(asset)"
+      >
+        <div class="images-container">
+          <div
+            class="brand-img-overlay cursor"
+            [ngClass]="{ active: asset.selected }"
+          ></div>
+          <img
+            [src]="asset.thumbUrl"
+            alt="asset.asset_name"
+            class="images-preview"
+          />
+        </div>
+        <p
+          class="product-name"
+          [matTooltip]="asset.product_name"
+          matTooltipPosition="right"
+        >
+          {{ asset.product_name?.substring(0, 40) }}
+        </p>
+      </span>
+    </div>
+  </div> -->
+
+  <div class="loader" *ngIf="progress && !toggleClass"></div>
+  <!-- <div class="loading-msg" *ngIf="progress && !toggleClass">
+    Fetching {{ assetType === 'icon_path' ? 'icons' : assetType }} ...
+  </div> -->
+</mat-dialog-content>
+<mat-dialog-actions
+  class="mat-dialog-footer"
+  [ngClass]="{
+    'validation-msg':
+      (selectedAssests.length &&
+        assetType != 'image' &&
+        fromComp != 'editMod') ||
+      ((fromComp == 'editMod' || fromComp == 'promo-view') &&
+        selectedAssests.length > (data.from == 'images' ? 5 : 5))
+  }"
+>
+  <div
+    class="selectedImgs"
+    *ngIf="
+      selectedAssests.length &&
+      (assetType != 'image' || assetType != 'logos') &&
+      (fromComp != 'editMod' && fromComp != 'promo-view')
+    "
+  >
+    <p>
+      Selected {{ assetType === 'icon_path' ? 'Icons' : assetType }}:<span>
+        {{ selectedAssests.length }}</span
+      >
+    </p>
+  </div>
+  <div>
+    <p
+      *ngIf="
+        (fromComp == 'editMod' || fromComp == 'promo-view') &&
+        selectedAssests.length > (data.from == 'images' ? 5 : 5)
+      "
+      class="pi-error"
+    >
+      Maximum images have been selected.
+      <!-- {{ data.from == 'images' ? 12 : 4 }} -->
+    </p>
+  </div>
+  <div>
+    <button pi-button (click)="close()">Cancel</button>
+    <button
+      pi-button
+      color="accent"
+      class="apply-btn"
+      [disabled]="disableSave"
+      (click)="updateAssets()"
+    >
+      Save
+    </button>
+  </div>
+</mat-dialog-actions>

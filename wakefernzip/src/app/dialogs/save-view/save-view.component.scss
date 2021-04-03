@@ -1,0 +1,39 @@
+.save-view-dialog {
+  .mat-dialog-container {
+    min-width: 480px;
+    width: 100%;
+    max-width: 480px;
+    .mat-dialog-heading {
+      // .mat-dialog-title {
+      //   margin-top: -4px;
+      // }
+      .mat-icon-button {
+        margin-top: -8px;
+      }
+    }
+    .mat-dialog-content {
+      align-items: unset !important;
+      min-height: unset !important;
+    }
+  }
+}
+.save-view-container {
+  min-width: 440px;
+  .pi-field-group {
+    margin-top: 10px;
+  }
+}
+.error-block {
+  flex: 1;
+}
+
+.dialog-footer {
+  display: flex;
+  margin-top: 20px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pointer {
+  cursor: pointer;
+}
